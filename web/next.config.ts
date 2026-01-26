@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Prevent build errors if these packages are used in edge runtime
+  // Prevent build errors if these packages are used in edge runtime test
   serverExternalPackages: ['drizzle-orm', '@neondatabase/serverless'],
 };
 
