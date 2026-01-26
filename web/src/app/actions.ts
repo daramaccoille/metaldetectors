@@ -9,6 +9,7 @@ import { headers } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
     apiVersion: '2025-01-27.acacia' as any, // Latest or matching installed
+    httpClient: Stripe.createFetchHttpClient(),
 });
 
 export async function subscribe(formData: FormData) {
