@@ -18,12 +18,15 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.8.0",
-    "stripe": "^20.2.0"
+    "stripe": "^20.2.0",
+    "ws": "^8.19.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260124.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.8",
     "eslint": "^9",
