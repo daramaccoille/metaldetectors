@@ -3,7 +3,7 @@ import Script from 'next/script';
 import { subscribe } from './actions';
 
 import { headers } from 'next/headers';
-
+import Head from "next/head";
 export const runtime = 'edge';
 
 export default async function Home() {
@@ -27,7 +27,9 @@ export default async function Home() {
   return (
     <main className="main-layout">
       <Script src="https://js.stripe.com/v3/buy-button.js" async />
-
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       {/* Background Ambience */}
       <div className="bg-ambience">
         <div className="orb" />
@@ -54,7 +56,7 @@ export default async function Home() {
           />
           {/* Removed ambiguous "Start" button. User must pick a plan below. */}
           <div style={{ color: '#aaa', fontSize: '0.9rem', marginTop: '0.5rem' }}>
-            Start by entering your email above, then select a plan below.
+            Enter your email, then select a plan to subscribe.
           </div>
         </div>
 
@@ -77,7 +79,7 @@ export default async function Home() {
             <form action={subscribe} className="plan-form" style={{ marginTop: 'auto', paddingTop: '1rem' }}>
               <input type="hidden" name="email" value="" className="js-email-transfer" />
               <input type="hidden" name="plan" value="basic" />
-              <button type="submit" className="btn-secondary w-full">
+              <button type="submit" className="btn-primary w-full" style={{ width: '100%', marginTop: '1rem' }}>
                 Select Basic
               </button>
             </form>
@@ -139,8 +141,9 @@ export default async function Home() {
 
       <footer className="footer flex gap-6 text-sm">
         <span>© 2026 metaldetectors.online</span>
-        <a href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
-        <a href="/terms" className="hover:text-gray-300 transition-colors">Terms of Service</a>
+        <br />
+        <a href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy </a>
+        <a href="/terms" className="hover:text-gray-300 transition-colors">Terms of Service </a>
       </footer>
     </main>
   );

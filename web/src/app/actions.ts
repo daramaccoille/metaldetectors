@@ -40,12 +40,12 @@ export async function subscribe(formData: FormData) {
     // STRIPE_PRICE_ID_PRO and STRIPE_PRICE_ID_BASIC should be defined
 
     // Fallback to existing single var if strict PRO/BASIC vars aren't separate yet
-    let priceId = process.env.STRIPE_PRICE_ID;
+    let priceId = process.env.STRIPE_PRICE_ID_PRO;
 
     if (plan === 'basic') {
-        priceId = process.env.STRIPE_PRICE_ID_BASIC || process.env.STRIPE_PRICE_ID;
+        priceId = process.env.STRIPE_PRICE_ID_BASIC;
     } else {
-        priceId = process.env.STRIPE_PRICE_ID_PRO || process.env.STRIPE_PRICE_ID;
+        priceId = process.env.STRIPE_PRICE_ID_PRO;
     }
 
     if (!priceId) priceId = 'price_12345_mock';
