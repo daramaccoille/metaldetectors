@@ -51,12 +51,25 @@ export async function subscribe(formData: FormData) {
     if (!priceId) priceId = 'price_12345_mock';
 
 
+
+    // Check if user already exists to prevent duplicate customers
+    const existingUser = await db.query.subscribers.findFirst({
+        where: eq(subscribers.email, email)
+    });
+
+    let customerParam = {};
+    if (existingUser?.stripeCustomerId) {
+        customerParam = { customer: existingUser.stripeCustomerId };
+    } else {
+        customerParam = { customer_email: email };
+    }
+
     const session = await stripe.checkout.sessions.create({
         line_items: [{ price: priceId, quantity: 1 }],
         mode: 'subscription',
         success_url: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/`,
-        customer_email: email,
+        ...customerParam,
         metadata: {
             preferred_locale: locale,
             preferred_currency: currency
@@ -70,10 +83,11 @@ export async function subscribe(formData: FormData) {
             stripeId: session.id,
             active: false,
             currency: currency,
-            locale: locale
+            locale: locale,
+            plan: plan
         }).onConflictDoUpdate({
             target: subscribers.email,
-            set: { stripeId: session.id, currency, locale } // Update pending session
+            set: { stripeId: session.id, currency, locale, plan } // Update pending session
         });
     } catch (e) {
         console.error("Failed to record basic subscriber info", e);
@@ -84,4 +98,68 @@ export async function subscribe(formData: FormData) {
         // The customer_email parameter in session creation handles the prefilling logic automatically on Stripe's side
         redirect(session.url);
     }
+}
+
+import { Resend } from 'resend';
+import { eq } from 'drizzle-orm';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function manageSubscription(formData: FormData) {
+    const email = formData.get('email') as string;
+    if (!email) return;
+
+    // 1. Look up user
+    const user = await db.query.subscribers.findFirst({
+        where: eq(subscribers.email, email)
+    });
+
+    if (!user || !user.stripeCustomerId) {
+        // For security, don't reveal if user exists or not, but maybe log it
+        console.log(`Manage request for unknown or non-customer email: ${email}`);
+        redirect('/account?sent=true'); // Pretend we sent it
+        return;
+    }
+
+    // 2. Create Portal Session
+    let portalSession;
+    try {
+        portalSession = await stripe.billingPortal.sessions.create({
+            customer: user.stripeCustomerId,
+            return_url: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/account`,
+        });
+    } catch (e: any) {
+        console.error("Stripe Portal Error:", e.message);
+        // If customer ID is invalid (deleted in Stripe but not DB), catch here
+        redirect('/account?error=stripe_error');
+        return;
+    }
+
+    // 3. Send Email
+    try {
+        await resend.emails.send({
+            from: 'MetalDetectors Accounts <accounts@metaldetectors.online>',
+            to: email,
+            subject: 'Manage your MetalDetectors Subscription',
+            html: `
+                <div style="font-family: sans-serif; color: #333;">
+                    <h1>Manage Your Subscription</h1>
+                    <p>Click the link below to upgrade, downgrade, or cancel your plan.</p>
+                    <p>
+                        <a href="${portalSession.url}" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                            Go to Customer Portal
+                        </a>
+                    </p>
+                    <p style="font-size: 12px; color: #666; margin-top: 20px;">
+                        If you didn't request this, you can ignore this email.
+                    </p>
+                </div>
+            `
+        });
+    } catch (e) {
+        console.error("Resend Error:", e);
+        redirect('/account?error=email_failed');
+    }
+
+    redirect('/account?sent=true');
 }

@@ -8,6 +8,20 @@
       "when": 1769444754982,
       "tag": "0000_first_kabuki",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769530414720,
+      "tag": "0001_needy_boomer",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769530483678,
+      "tag": "0002_legal_alice",
+      "breakpoints": true
     }
   ]
 }

@@ -41,7 +41,10 @@ export async function POST(req: Request) {
       // We rely on the session.id being stored in the stripeId column during the initial subscribe action
       try {
         await db.update(subscribers)
-          .set({ active: true })
+          .set({
+            active: true,
+            stripeCustomerId: session.customer as string
+          })
           .where(eq(subscribers.stripeId, session.id));
         console.log(`Activated subscriber with session ID: ${session.id}`);
       } catch (err) {

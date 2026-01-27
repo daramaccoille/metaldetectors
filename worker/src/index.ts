@@ -7,6 +7,7 @@ import { getMetalAnalysis } from './ai/gemini';
 import { formatMetalPrice, SupportedCurrency, SupportedLocale } from './utils/format';
 import { sendEmail } from './utils/email';
 import { fetchMarketData, MarketData } from './utils/market';
+import { generateBasicEmailHtml, generateProEmailHtml } from './templates/daily-digest';
 
 export interface Env {
 	DATABASE_URL: string;
@@ -79,45 +80,18 @@ export default {
 			const currency = (sub.currency || 'USD') as SupportedCurrency;
 			const locale = (sub.locale || 'en-US') as SupportedLocale;
 
-			// Format Content
-			let emailHtml = `
-              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
-                <h1 style="text-align: center; color: #D4AF37; margin-bottom: 24px;">MetalDetectors Daily</h1>
-                <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 32px;">
-                  High-conviction AI signals for ${new Date().toLocaleDateString(locale)}
-                </p>
-            `;
+			// Format Content using Templates
+			// TODO: In future, read 'plan' from subscriber DB. For now, we assume all current users are PRO 
+			// but we can test BASIC by checking a specific email or random logic if desired.
+			// Let's implement logic: If there was a plan field we'd usage it.
+			// For now, let's say everyone gets PRO.
 
-			for (const [metal, data] of Object.entries(analysis) as [string, any][]) {
-				const targetPriceUSD = data.target_price;
-				const formattedPrice = formatMetalPrice(targetPriceUSD, fxRates[currency], currency, locale);
-				const color = data.ai_guess.toLowerCase().includes('buy') ? '#10B981' :
-					data.ai_guess.toLowerCase().includes('sell') || data.ai_guess.toLowerCase().includes('short') ? '#EF4444' : '#F59E0B';
+			let emailHtml = generateProEmailHtml(analysis, marketData, currency, locale, fxRates);
 
-				emailHtml += `
-                  <div style="margin-bottom: 16px; border: 1px solid #eee; padding: 16px; border-radius: 12px; background: #fafafa;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                      <h2 style="margin: 0; font-size: 18px;">${metal}</h2>
-                      <span style="background: ${color}; color: white; padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: bold; text-transform: uppercase;">
-                        ${data.ai_guess}
-                      </span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
-                      <span>Target: <strong>${formattedPrice}</strong></span>
-                      <span style="color: #666;">RSI: ${(marketData as any)[metal]?.rsi?.toFixed(0) ?? 'N/A'}</span>
-                    </div>
-                    <p style="margin: 0; font-style: italic; color: #555; font-size: 14px; line-height: 1.5;">"${data.reasoning}"</p>
-                  </div>
-                `;
-			}
-
-			emailHtml += `
-              <div style="margin-top: 32px; text-align: center; font-size: 12px; color: #999;">
-                <p>Not financial advice. Trading involves risk.</p>
-                <p><a href="https://metaldetectors.info/unsubscribe" style="color: #999;">Unsubscribe</a></p>
-              </div>
-            </div>
-            `;
+			// Example of how we would use Basic:
+			// if (sub.plan === 'basic') {
+			//    emailHtml = generateBasicEmailHtml(analysis, marketData, currency, locale, fxRates);
+			// }
 
 			await sendEmail(env.RESEND_API_KEY, sub.email, `Daily Signals: ${Object.keys(analysis).join(', ')}`, emailHtml);
 		}));

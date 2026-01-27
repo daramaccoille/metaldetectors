@@ -26,8 +26,10 @@ If fixing the Root Directory (above) gets your site online, you can stick with `
 - [ ] **Environment Variables**: Add these in **Settings > Environment variables**:
   - `NEXT_PUBLIC_URL`: `https://metaldetectors.info` (or your pages.dev URL)
   - `STRIPE_SECRET_KEY`: `sk_live_...`
-  - `STRIPE_PRICE_ID`: `price_...`
+  - `STRIPE_PRICE_ID_PRO`: `price_...` (Pro Plan)
+  - `STRIPE_PRICE_ID_BASIC`: `price_...` (Basic Plan)
   - `STRIPE_WEBHOOK_SECRET`: `whsec_...` (from dashboard)
+  - `RESEND_API_KEY`: `re_...` (for account management emails)
   - `DATABASE_URL`: `postgres://...` (Neon Connection String)
 
 ### Backend (Cloudflare Worker)
