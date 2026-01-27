@@ -14,6 +14,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
 
 export async function subscribe(formData: FormData) {
     const email = formData.get('email') as string;
+    // 'plan' can be 'basic' or 'pro' (defaulting to pro if not specified)
+    const plan = formData.get('plan') as string || 'pro';
+
     if (!email) return;
 
     // Attempt to detect locale from Cloudflare headers
@@ -33,8 +36,20 @@ export async function subscribe(formData: FormData) {
     }
 
     // Create Checkout Session
-    // Use a dummy price ID if not set for build check
-    const priceId = process.env.STRIPE_PRICE_ID || 'price_12345'; // Ensure this is set in env
+    // Use environmental variables for price IDs
+    // STRIPE_PRICE_ID_PRO and STRIPE_PRICE_ID_BASIC should be defined
+
+    // Fallback to existing single var if strict PRO/BASIC vars aren't separate yet
+    let priceId = process.env.STRIPE_PRICE_ID;
+
+    if (plan === 'basic') {
+        priceId = process.env.STRIPE_PRICE_ID_BASIC || process.env.STRIPE_PRICE_ID;
+    } else {
+        priceId = process.env.STRIPE_PRICE_ID_PRO || process.env.STRIPE_PRICE_ID;
+    }
+
+    if (!priceId) priceId = 'price_12345_mock';
+
 
     const session = await stripe.checkout.sessions.create({
         line_items: [{ price: priceId, quantity: 1 }],
@@ -65,6 +80,8 @@ export async function subscribe(formData: FormData) {
     }
 
     if (session.url) {
+        // Stripe Checkout URL already contains session ID but we can ensure email is prefilled if session config allows
+        // The customer_email parameter in session creation handles the prefilling logic automatically on Stripe's side
         redirect(session.url);
     }
 }

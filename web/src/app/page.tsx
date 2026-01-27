@@ -56,6 +56,8 @@ export default async function Home() {
 
         {/* Pricing Comparison */}
         <div className="pricing-grid">
+
+          {/* BASIC PLAN */}
           <div className="pricing-card basic">
             <h3 className="card-title">Basic (nominal fee)</h3>
             <div className="price">{currencySymbol}{basicPrice} <span className="price-period">/ month</span></div>
@@ -64,8 +66,17 @@ export default async function Home() {
               <li className="feature">❌ Weekly Digest</li>
               <li className="feature">❌ No AI Predictions</li>
             </ul>
+
+            <form action={subscribe} style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+              <input type="hidden" name="email" value="" className="js-email-transfer" />
+              <input type="hidden" name="plan" value="basic" />
+              <button type="submit" className="btn-secondary w-full">
+                Select Basic
+              </button>
+            </form>
           </div>
 
+          {/* PRO PLAN */}
           <div className="pricing-card pro">
             <div className="badge">RECOMMENDED</div>
             <h3 className="card-title" style={{ color: 'white' }}>Pro Analyst</h3>
@@ -75,11 +86,41 @@ export default async function Home() {
               <li className="feature"><span className="check">✓</span> Best daily predictions</li>
               <li className="feature"><span className="check">✓</span> Deep learning &quot;Buy/Sell&quot; Signals</li>
             </ul>
-            <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
 
-            </div>
+            <form action={subscribe} style={{ marginTop: 'auto' }}>
+              <input type="hidden" name="email" value="" className="js-email-transfer" />
+              <input type="hidden" name="plan" value="pro" />
+              <button type="submit" className="btn-primary w-full" style={{ width: '100%', marginTop: '1rem' }}>
+                Select Pro
+              </button>
+            </form>
           </div>
         </div>
+
+        {/* Client-side script to stash the email from the main input into the hidden fields */}
+        <Script id="email-transfer" strategy="afterInteractive">
+          {`
+            const mainInput = document.querySelector('input[name="email"]');
+            const hiddenInputs = document.querySelectorAll('.js-email-transfer');
+            
+            if(mainInput) {
+                mainInput.addEventListener('input', (e) => {
+                    hiddenInputs.forEach(input => input.value = e.target.value);
+                });
+            }
+            
+            // Allow main form submit to default to PRO
+            const mainForm = document.querySelector('.subscribe-form');
+            if(mainForm) {
+                // If they hit enter on the main input, treat it as PRO subscription
+                const hiddenPlan = document.createElement('input');
+                hiddenPlan.type = 'hidden';
+                hiddenPlan.name = 'plan';
+                hiddenPlan.value = 'pro';
+                mainForm.appendChild(hiddenPlan);
+            }
+        `}
+        </Script>
 
       </div>
 
