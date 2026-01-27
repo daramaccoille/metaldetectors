@@ -3,7 +3,7 @@ import Script from 'next/script';
 import { subscribe } from './actions';
 
 import { headers } from 'next/headers';
-import Head from "next/head";
+
 export const runtime = 'edge';
 
 export default async function Home() {
@@ -27,9 +27,7 @@ export default async function Home() {
   return (
     <main className="main-layout">
       <Script src="https://js.stripe.com/v3/buy-button.js" async />
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+
       {/* Background Ambience */}
       <div className="bg-ambience">
         <div className="orb" />
