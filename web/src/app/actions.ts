@@ -64,17 +64,36 @@ export async function subscribe(formData: FormData) {
         customerParam = { customer_email: email };
     }
 
-    const session = await stripe.checkout.sessions.create({
-        line_items: [{ price: priceId, quantity: 1 }],
-        mode: 'subscription',
-        success_url: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/`,
-        ...customerParam,
-        metadata: {
-            preferred_locale: locale,
-            preferred_currency: currency
-        }
-    });
+    // Debugging: Log (safely) if keys are present
+    console.log("Stripe Key Present:", !!process.env.STRIPE_SECRET_KEY);
+    console.log("Price ID (Basic):", !!process.env.STRIPE_PRICE_ID_BASIC, process.env.STRIPE_PRICE_ID_BASIC);
+    console.log("Price ID (Pro):", !!process.env.STRIPE_PRICE_ID_PRO, process.env.STRIPE_PRICE_ID_PRO);
+    console.log("Selected Plan:", plan);
+    console.log("User Email:", email);
+
+    if (!priceId || priceId.includes('mock')) {
+        console.error("CRITICAL: Invalid Price ID. Check Cloudflare Environment Variables.");
+        // We might want to throw here or return an error state, but let's see logic flow
+    }
+
+    let session;
+    try {
+        session = await stripe.checkout.sessions.create({
+            line_items: [{ price: priceId, quantity: 1 }],
+            mode: 'subscription',
+            success_url: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/`,
+            ...customerParam,
+            metadata: {
+                preferred_locale: locale,
+                preferred_currency: currency,
+                plan_type: plan
+            }
+        });
+    } catch (err: any) {
+        console.error("Stripe Session Creation Failed:", err.message);
+        throw new Error(`Stripe Config Error: ${err.message}`);
+    }
 
     // Insert "Pending" subscriber
     try {

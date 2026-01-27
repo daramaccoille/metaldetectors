@@ -43,18 +43,20 @@ export default async function Home() {
           <span className="highlight-metals">XAU • XAG • Cu • Pt • Pd</span>
         </p>
 
-        <form action={subscribe} className="subscribe-form">
+        <div className="subscribe-form">
           <input
             name="email"
             type="email"
             required
             placeholder="email@example.com"
             className="email-input"
+          // The value is synchronized via JS below
           />
-          <button type="submit" className="btn-primary">
-            Start Daily Digest
-          </button>
-        </form>
+          {/* Removed ambiguous "Start" button. User must pick a plan below. */}
+          <div style={{ color: '#aaa', fontSize: '0.9rem', marginTop: '0.5rem' }}>
+            Start by entering your email above, then select a plan below.
+          </div>
+        </div>
 
         {/* Pricing Comparison */}
         <div className="pricing-grid">
@@ -72,10 +74,10 @@ export default async function Home() {
               <li className="feature">✓ Brief Predictions</li>
             </ul>
 
-            <form action={subscribe} style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+            <form action={subscribe} className="plan-form" style={{ marginTop: 'auto', paddingTop: '1rem' }}>
               <input type="hidden" name="email" value="" className="js-email-transfer" />
               <input type="hidden" name="plan" value="basic" />
-              <button type="submit" className="btn-primary w-full" style={{ width: '100%', marginTop: '1rem' }}>
+              <button type="submit" className="btn-secondary w-full">
                 Select Basic
               </button>
             </form>
@@ -95,7 +97,7 @@ export default async function Home() {
               <li className="feature"><span className="check">✓</span> Deep learning &quot;Buy/Sell&quot; Signals</li>
             </ul>
 
-            <form action={subscribe} style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+            <form action={subscribe} className="plan-form" style={{ marginTop: 'auto', paddingTop: '1rem' }}>
               <input type="hidden" name="email" value="" className="js-email-transfer" />
               <input type="hidden" name="plan" value="pro" />
               <button type="submit" className="btn-primary w-full" style={{ width: '100%', marginTop: '1rem' }}>
@@ -110,6 +112,7 @@ export default async function Home() {
           {`
             const mainInput = document.querySelector('input[name="email"]');
             const hiddenInputs = document.querySelectorAll('.js-email-transfer');
+            const planForms = document.querySelectorAll('.plan-form');
             
             if(mainInput) {
                 mainInput.addEventListener('input', (e) => {
@@ -117,16 +120,18 @@ export default async function Home() {
                 });
             }
             
-            // Allow main form submit to default to PRO
-            const mainForm = document.querySelector('.subscribe-form');
-            if(mainForm) {
-                // If they hit enter on the main input, treat it as PRO subscription
-                const hiddenPlan = document.createElement('input');
-                hiddenPlan.type = 'hidden';
-                hiddenPlan.name = 'plan';
-                hiddenPlan.value = 'pro';
-                mainForm.appendChild(hiddenPlan);
-            }
+            // Intercept form submission to validate email presence
+            planForms.forEach(form => {
+                form.addEventListener('submit', (e) => {
+                    const hiddenEmail = form.querySelector('.js-email-transfer').value;
+                    if(!hiddenEmail || !hiddenEmail.includes('@')) {
+                        e.preventDefault();
+                        alert("Please enter a valid email address at the top of the page first.");
+                        mainInput.focus();
+                        mainInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            });
         `}
         </Script>
 
