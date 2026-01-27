@@ -4,6 +4,8 @@ import { subscribe } from './actions';
 
 import { headers } from 'next/headers';
 
+export const runtime = 'edge';
+
 export default async function Home() {
   const headersList = await headers();
   const country = headersList.get('cf-ipcountry');
