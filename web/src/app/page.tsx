@@ -2,7 +2,26 @@
 import Script from 'next/script';
 import { subscribe } from './actions';
 
-export default function Home() {
+import { headers } from 'next/headers';
+
+export default async function Home() {
+  const headersList = await headers();
+  const country = headersList.get('cf-ipcountry');
+
+  let currencySymbol = '$';
+  let price = '5';
+  let basicPrice = '1';
+
+  if (country === 'GB') {
+    currencySymbol = '£';
+    price = '4';
+    basicPrice = '1';
+  } else if (['IE', 'DE', 'FR', 'ES', 'IT', 'NL', 'PT', 'BE', 'AT'].includes(country || '')) {
+    currencySymbol = '€';
+    price = '5';
+    basicPrice = '1';
+  }
+
   return (
     <main className="main-layout">
       <Script src="https://js.stripe.com/v3/buy-button.js" async />
@@ -17,7 +36,7 @@ export default function Home() {
           Daily AI Metals Signals.
         </h1>
         <p className="hero-subtitle">
-          The 2-minute daily read for serious traders.
+          The 2-minute daily read for informed trading.
           <br />
           <span className="highlight-metals">XAU • XAG • Cu • Pt • Pd</span>
         </p>
@@ -27,7 +46,7 @@ export default function Home() {
             name="email"
             type="email"
             required
-            placeholder="trader@hedgefund.com"
+            placeholder="email@example.com"
             className="email-input"
           />
           <button type="submit" className="btn-primary">
@@ -38,8 +57,8 @@ export default function Home() {
         {/* Pricing Comparison */}
         <div className="pricing-grid">
           <div className="pricing-card basic">
-            <h3 className="card-title">Basic (Free)</h3>
-            <div className="price">$0</div>
+            <h3 className="card-title">Basic (nominal fee)</h3>
+            <div className="price">{currencySymbol}{basicPrice} <span className="price-period">/ month</span></div>
             <ul className="features-list">
               <li className="feature">❌ XAU Only</li>
               <li className="feature">❌ Weekly Digest</li>
@@ -50,19 +69,14 @@ export default function Home() {
           <div className="pricing-card pro">
             <div className="badge">RECOMMENDED</div>
             <h3 className="card-title" style={{ color: 'white' }}>Pro Analyst</h3>
-            <div className="price">$5 <span className="price-period">/ month</span></div>
+            <div className="price">{currencySymbol}{price} <span className="price-period">/ month</span></div>
             <ul className="features-list">
               <li className="feature"><span className="check">✓</span> All 5 Metals</li>
-              <li className="feature"><span className="check">✓</span> Daily Morning Brief</li>
-              <li className="feature"><span className="check">✓</span> Gemini AI &quot;Buy/Sell&quot; Signals</li>
+              <li className="feature"><span className="check">✓</span> Best daily predictions</li>
+              <li className="feature"><span className="check">✓</span> Deep learning &quot;Buy/Sell&quot; Signals</li>
             </ul>
             <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}>
 
-              <stripe-buy-button
-                buy-button-id="buy_btn_1StbdRGah8b9m762SrZJcjSt"
-                publishable-key="pk_test_51StanwGah8b9m762RPSJLRdMBD9GqogrULvj7yw0Xi7rx3I9oGFoVZWnBi1ETzqJtIlq29MmnkElXN2GVQNFx2BX00z7OOhcDa"
-              >
-              </stripe-buy-button>
             </div>
           </div>
         </div>
@@ -70,7 +84,7 @@ export default function Home() {
       </div>
 
       <footer className="footer flex gap-6 text-sm">
-        <span>© 2026 MetalDetectors Inc.</span>
+        <span>© 2026 metaldetectors.online</span>
         <a href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
         <a href="/terms" className="hover:text-gray-300 transition-colors">Terms of Service</a>
       </footer>
