@@ -61,18 +61,21 @@ export default async function Home() {
 
           {/* BASIC PLAN */}
           <div className="pricing-card basic">
+            <div style={{ width: '100%', height: '140px', overflow: 'hidden', borderRadius: '8px 8px 0 0', marginBottom: '16px' }}>
+              <img src="/basic.png" alt="Basic Plan" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
             <h3 className="card-title">Basic (nominal fee)</h3>
             <div className="price">{currencySymbol}{basicPrice} <span className="price-period">/ month</span></div>
             <ul className="features-list">
-              <li className="feature">❌ XAU Only</li>
-              <li className="feature">❌ Weekly Digest</li>
-              <li className="feature">❌ No AI Predictions</li>
+              <li className="feature">✓ XAU Only</li>
+              <li className="feature">✓ Weekly Digest</li>
+              <li className="feature">✓ Brief Predictions</li>
             </ul>
 
             <form action={subscribe} style={{ marginTop: 'auto', paddingTop: '1rem' }}>
               <input type="hidden" name="email" value="" className="js-email-transfer" />
               <input type="hidden" name="plan" value="basic" />
-              <button type="submit" className="btn-secondary w-full">
+              <button type="submit" className="btn-primary w-full" style={{ width: '100%', marginTop: '1rem' }}>
                 Select Basic
               </button>
             </form>
@@ -81,6 +84,9 @@ export default async function Home() {
           {/* PRO PLAN */}
           <div className="pricing-card pro">
             <div className="badge">RECOMMENDED</div>
+            <div style={{ width: '100%', height: '140px', overflow: 'hidden', borderRadius: '8px 8px 0 0', marginBottom: '16px' }}>
+              <img src="/pro.png" alt="Pro Plan" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
             <h3 className="card-title" style={{ color: 'white' }}>Pro Analyst</h3>
             <div className="price">{currencySymbol}{price} <span className="price-period">/ month</span></div>
             <ul className="features-list">
@@ -89,7 +95,7 @@ export default async function Home() {
               <li className="feature"><span className="check">✓</span> Deep learning &quot;Buy/Sell&quot; Signals</li>
             </ul>
 
-            <form action={subscribe} style={{ marginTop: 'auto' }}>
+            <form action={subscribe} style={{ marginTop: 'auto', paddingTop: '1rem' }}>
               <input type="hidden" name="email" value="" className="js-email-transfer" />
               <input type="hidden" name="plan" value="pro" />
               <button type="submit" className="btn-primary w-full" style={{ width: '100%', marginTop: '1rem' }}>
