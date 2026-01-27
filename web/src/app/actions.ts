@@ -53,9 +53,18 @@ export async function subscribe(formData: FormData) {
 
 
     // Check if user already exists to prevent duplicate customers
-    const existingUser = await db.query.subscribers.findFirst({
-        where: eq(subscribers.email, email)
-    });
+    let existingUser;
+    try {
+        console.log("Checking DB for existing user...");
+        existingUser = await db.query.subscribers.findFirst({
+            where: eq(subscribers.email, email)
+        });
+        console.log("DB Check Complete. Found:", !!existingUser);
+    } catch (dbError: any) {
+        console.error("DB Check Failed:", dbError.message);
+        // We won't crash, just treat as new user (no existing customer ID)
+        // But this implies DB might be broken
+    }
 
     let customerParam = {};
     if (existingUser?.stripeCustomerId) {
@@ -91,7 +100,30 @@ export async function subscribe(formData: FormData) {
             }
         });
     } catch (err: any) {
-        console.error("Stripe Session Creation Failed:", err.message);
+        console.error("\n❌ STRIPE ERROR:", err.message);
+
+        // DEBUG: List available prices to help User fix .env
+        try {
+            console.log("\n🔍 DIAGNOSING CONFIGURATION...");
+            const account = await stripe.accounts.retrieve();
+            console.log(`Checking prices for Stripe Account ID: ${account.id}`);
+
+            const prices = await stripe.prices.list({ limit: 10, active: true });
+            console.log("\n✅ VALID PRICES FOUND IN THIS ACCOUNT:");
+            if (prices.data.length === 0) {
+                console.log("   (No active prices found. Please create a Product & Price in this Stripe Dashboard)");
+            }
+            prices.data.forEach(p => {
+                const product = typeof p.product === 'string' ? p.product : p.product.id;
+                console.log(`   👉 ID: ${p.id}  |  ${p.unit_amount ? p.unit_amount / 100 : 0} ${p.currency.toUpperCase()}`);
+            });
+            console.log("\n⚠️ IF YOUR ID IS NOT ABOVE, IT IS FROM A DIFFERENT ACCOUNT (OR LIVE/TEST MISMATCH).");
+            console.log("   Please update .env.local with one of the IDs above, or switch your STRIPE_SECRET_KEY.\n");
+
+        } catch (listErr) {
+            console.error("Could not list prices (Key might be invalid):", listErr);
+        }
+
         throw new Error(`Stripe Config Error: ${err.message}`);
     }
 
@@ -108,13 +140,21 @@ export async function subscribe(formData: FormData) {
             target: subscribers.email,
             set: { stripeId: session.id, currency, locale, plan } // Update pending session
         });
-    } catch (e) {
-        console.error("Failed to record basic subscriber info", e);
+
+        console.log("Subscriber record created/updated successfully.");
+
+    } catch (e: any) {
+        console.error("FATAL: Failed to record subscriber info in DB", e);
+        // If we can't save to DB, user pays but we don't know who they are. 
+        // We should PROBABLY throw error to stop redirect, or allow it and rely on webhook to fix DB?
+        // Safest is to error out.
+        throw new Error(`Database Error: ${e.message}`);
     }
 
     if (session.url) {
         // Stripe Checkout URL already contains session ID but we can ensure email is prefilled if session config allows
         // The customer_email parameter in session creation handles the prefilling logic automatically on Stripe's side
+        console.log(`Redirecting to: ${session.url}`);
         redirect(session.url);
     }
 }
@@ -122,9 +162,12 @@ export async function subscribe(formData: FormData) {
 import { Resend } from 'resend';
 import { eq } from 'drizzle-orm';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Remove global init to prevent crash if key is missing
+// const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function manageSubscription(formData: FormData) {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     const email = formData.get('email') as string;
     if (!email) return;
 

@@ -14,30 +14,33 @@ This error happens because Cloudflare Pages looks for `package.json` in the **ro
 
 ## 2. ⚠️ The "Deprecated next-on-pages" Warning
 Cloudflare is transitioning to `OpenNext`. The warning is annoying but usually **safe to ignore** for now if your app builds. 
-If fixing the Root Directory (above) gets your site online, you can stick with `next-on-pages` for now.
+## 4. Environment Variables Checklist (CRITICAL)
 
-## 3. Deployment Checklist
+### **A. Frontend (Cloudflare Pages)**
+These handle the **Website**, **Sign Up**, and **Subscription Management**.
+Go to: **Stats (Settings) > Environment variables > Production**
 
-### Frontend (Cloudflare Pages)
-- [ ] **Repo Connected**: GitHub repo connected to Cloudflare Pages.
-- [ ] **Root Directory**: Set to `web`.
-- [ ] **Build Command**: `npx @cloudflare/next-on-pages@latest`
-- [ ] **Output Directory**: `.vercel/output/static`
-- [ ] **Environment Variables**: Add these in **Settings > Environment variables**:
-  - `NEXT_PUBLIC_URL`: `https://metaldetectors.info` (or your pages.dev URL)
-  - `STRIPE_SECRET_KEY`: `sk_live_...`
-  - `STRIPE_PRICE_ID_PRO`: `price_...` (Pro Plan)
-  - `STRIPE_PRICE_ID_BASIC`: `price_...` (Basic Plan)
-  - `STRIPE_WEBHOOK_SECRET`: `whsec_...` (from dashboard)
-  - `RESEND_API_KEY`: `re_...` (for account management emails)
-  - `DATABASE_URL`: `postgres://...` (Neon Connection String)
+| Variable | Value Hint |
+| :--- | :--- |
+| `NEXT_PUBLIC_URL` | `https://metaldetectors.online` |
+| `DATABASE_URL` | `postgresql://...` (Neon DB) |
+| `STRIPE_SECRET_KEY` | `sk_live_...` |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
+| `STRIPE_PRICE_ID_BASIC` | `price_1Su...` (The $1 Price ID) |
+| `STRIPE_PRICE_ID_PRO` | `price_1Su...` (The $5 Price ID) |
+| `RESEND_API_KEY` | `re_...` (For 'Manage Subscription' emails) |
 
-### Backend (Cloudflare Worker)
-- [ ] **Deploy**: Run `npx wrangler deploy` from `worker/` directory.
-- [ ] **Secrets**: Ensure production secrets are set:
-  ```bash
-  npx wrangler secret put DATABASE_URL
-  npx wrangler secret put FMP_API_KEY
-  npx wrangler secret put GEMINI_API_KEY
-  npx wrangler secret put RESEND_API_KEY
-  ```
+### **B. Backend (Cloudflare Worker)**
+This handles **Daily Email Sending** and **AI Analysis**.
+These must be set via `npx wrangler secret put KEY` inside the `worker/` folder.
+
+| Secret Name | Value Hint |
+| :--- | :--- |
+| `DATABASE_URL` | `postgresql://...` (Same as Frontend) |
+| `FMP_API_KEY` | `...` |
+| `GEMINI_API_KEY` | `...` |
+| `RESEND_API_KEY` | `re_...` (For Daily Digest emails) |
+
+### **C. Local Development (`.env.local`)**
+This is for `npm run dev` on your machine.
+Ensure `web/.env.local` contains ALL the variables from Section A!
