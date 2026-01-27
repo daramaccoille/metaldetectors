@@ -240,3 +240,42 @@ Use: "Target is...", "Trend confirms...", "Expect bounce at...".
 - [ ] Run `npm run drizzle-kit push` against production Neon DB.
 - [ ] Deploy worker: `cd worker && npx wrangler deploy`.
 - [ ] Set production secrets via `npx wrangler secret put`.
+
+3. Check **Resend Logs** to see if an email was dispatched.
+4. If you have a test user in the DB with ctive: true, check that inbox.
+
+### 3. Email Template Refinement
+Currently, the email HTML is generated inline in worker/src/index.ts.
+**Future Improvement**:
+- Create a dedicated file worker/src/templates/daily-digest.ts.
+- Use a library like @react-email/components if you want easier styling, or simply extract the HTML string builder function to keep the main loop clean.
+
+- Ensure the Unsubscribe link points to a real endpoint (currently a placeholder).
+
+### 4. AI Prompt Engineering
+Monitor the Gemini outputs in the email.
+- If the analysis feels generic, tweak the SYSTEM_INSTRUCTION in worker/src/ai/gemini.ts.
+- You can add more technical indicators (e.g., MACD, Moving Averages) to the etchMarketData payload to give the AI more context.
+
+3. Check **Resend Logs** to see if an email was dispatched.
+4. If you have a test user in the DB with ctive: true, check that inbox.
+
+### 3. Email Template Refinement
+Currently, the email HTML is generated inline in worker/src/index.ts.
+**Future Improvement**:
+- Create a dedicated file worker/src/templates/daily-digest.ts.
+- Use a library like @react-email/components if you want easier styling, or simply extract the HTML string builder function to keep the main loop clean.
+
+
+
+- Ensure the Unsubscribe link points to a real endpoint (currently a placeholder).
+
+
+### 2. Verify AI & Email Loop
+The worker is deployed and scheduled for 07:00 UTC, but we should verify it manually.
+1. Ensure your FMP and Gemini keys are set in the Worker (via wrangler secret put).
+2. Trigger the scheduled event manually via curl (since we added the fetch handler):
+   `ash
+   curl https://worker.daramaccoille.workers.dev/
+   `"
+
