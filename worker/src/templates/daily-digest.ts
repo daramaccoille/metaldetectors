@@ -1,6 +1,5 @@
-
+import { AnalysisResult, MarketData } from '../types';
 import { formatMetalPrice, SupportedCurrency, SupportedLocale } from '../utils/format';
-import { MarketData } from '../utils/market';
 
 function getStyles() {
     return `
@@ -26,7 +25,7 @@ function getStyles() {
 
 // PRO TEMPLATE
 export function generateProEmailHtml(
-    analysis: any,
+    analysis: AnalysisResult,
     marketData: Record<string, MarketData>,
     currency: SupportedCurrency,
     locale: SupportedLocale,
@@ -101,7 +100,7 @@ export function generateProEmailHtml(
 
 // BASIC TEMPLATE (XAG Only)
 export function generateBasicEmailHtml(
-    analysis: any,
+    analysis: AnalysisResult,
     marketData: Record<string, MarketData>,
     currency: SupportedCurrency,
     locale: SupportedLocale,
@@ -111,7 +110,11 @@ export function generateBasicEmailHtml(
     const metal = 'XAG';
 
     // Safety check if XAG is missing
-    if (!analysis[metal]) return generateProEmailHtml(analysis, marketData, currency, locale, fxRates);
+    if (!analysis[metal]) {
+        // Fallback to Pro template if XAG missing (unlikely but safe)
+        // Note: passing analysis as any here if strict types complain, but they are same type
+        return generateProEmailHtml(analysis, marketData, currency, locale, fxRates);
+    }
 
     const data = analysis[metal];
     const targetPriceUSD = data.target_price;

@@ -1,14 +1,5 @@
-
 import { RSI, BollingerBands } from 'technicalindicators';
-
-export interface MarketData {
-    symbol: string;
-    price: number;
-    rsi: number;
-    bb_status: 'above_high' | 'below_low' | 'within_range';
-    trend: 'up' | 'down' | 'sideways';
-    raw_history?: any[]; // For debugging
-}
+import { MarketData } from '../types';
 
 // Helper to calculate technicals from raw close prices
 export function calculateTechnicals(closes: number[], currentPrice: number): Partial<MarketData> {

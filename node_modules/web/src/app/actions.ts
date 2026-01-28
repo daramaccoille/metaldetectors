@@ -164,15 +164,10 @@ export async function startCheckoutSession(formData: FormData) {
     return { error: "Failed to create checkout session URL" };
 }
 
-import { Resend } from 'resend';
+// import { Resend } from 'resend';
 import { eq } from 'drizzle-orm';
 
-// Remove global init to prevent crash if key is missing
-// const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function manageSubscription(formData: FormData) {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
     const email = formData.get('email') as string;
     if (!email) return;
 
@@ -182,9 +177,8 @@ export async function manageSubscription(formData: FormData) {
     });
 
     if (!user || !user.stripeCustomerId) {
-        // For security, don't reveal if user exists or not, but maybe log it
         console.log(`Manage request for unknown or non-customer email: ${email}`);
-        redirect('/account?sent=true'); // Pretend we sent it
+        redirect('/account?sent=true');
         return;
     }
 
@@ -197,32 +191,43 @@ export async function manageSubscription(formData: FormData) {
         });
     } catch (e: any) {
         console.error("Stripe Portal Error:", e.message);
-        // If customer ID is invalid (deleted in Stripe but not DB), catch here
         redirect('/account?error=stripe_error');
         return;
     }
 
-    // 3. Send Email
+    // 3. Send Email using fetch (Edge Compatible)
     try {
-        await resend.emails.send({
-            from: 'MetalDetectors Accounts <accounts@metaldetectors.online>',
-            to: email,
-            subject: 'Manage your MetalDetectors Subscription',
-            html: `
-                <div style="font-family: sans-serif; color: #333;">
-                    <h1>Manage Your Subscription</h1>
-                    <p>Click the link below to upgrade, downgrade, or cancel your plan.</p>
-                    <p>
-                        <a href="${portalSession.url}" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                            Go to Customer Portal
-                        </a>
-                    </p>
-                    <p style="font-size: 12px; color: #666; margin-top: 20px;">
-                        If you didn't request this, you can ignore this email.
-                    </p>
-                </div>
-            `
+        const res = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+            },
+            body: JSON.stringify({
+                from: 'MetalDetectors Accounts <accounts@metaldetectors.online>',
+                to: email,
+                subject: 'Manage your MetalDetectors Subscription',
+                html: `
+                    <div style="font-family: sans-serif; color: #333;">
+                        <h1>Manage Your Subscription</h1>
+                        <p>Click the link below to upgrade, downgrade, or cancel your plan.</p>
+                        <p>
+                            <a href="${portalSession.url}" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                                Go to Customer Portal
+                            </a>
+                        </p>
+                        <p style="font-size: 12px; color: #666; margin-top: 20px;">
+                            If you didn't request this, you can ignore this email.
+                        </p>
+                    </div>
+                `
+            })
         });
+
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`Resend API Error: ${res.status} ${errorText}`);
+        }
     } catch (e) {
         console.error("Resend Error:", e);
         redirect('/account?error=email_failed');

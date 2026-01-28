@@ -6,8 +6,9 @@ import { eq } from 'drizzle-orm';
 import { getMetalAnalysis } from './ai/gemini';
 import { formatMetalPrice, SupportedCurrency, SupportedLocale } from './utils/format';
 import { sendEmail } from './utils/email';
-import { fetchMarketData, MarketData } from './utils/market';
+import { fetchMarketData } from './utils/market';
 import { generateBasicEmailHtml, generateProEmailHtml } from './templates/daily-digest';
+import { MarketData } from './types';
 
 export interface Env {
 	DATABASE_URL: string;
