@@ -8,4 +8,6 @@ export const subscribers = pgTable('subscribers', {
     locale: text('locale').default('en-US'),
     stripeId: text('stripe_id'),
     active: boolean('active').default(false),
+    stripeCustomerId: text('stripe_customer_id'),
+    plan: text('plan').default('pro') // 'basic' or 'pro'
 });

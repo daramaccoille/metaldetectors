@@ -81,17 +81,14 @@ export default {
 			const locale = (sub.locale || 'en-US') as SupportedLocale;
 
 			// Format Content using Templates
-			// TODO: In future, read 'plan' from subscriber DB. For now, we assume all current users are PRO 
-			// but we can test BASIC by checking a specific email or random logic if desired.
-			// Let's implement logic: If there was a plan field we'd usage it.
-			// For now, let's say everyone gets PRO.
+			let emailHtml;
 
-			let emailHtml = generateProEmailHtml(analysis, marketData, currency, locale, fxRates);
-
-			// Example of how we would use Basic:
-			// if (sub.plan === 'basic') {
-			//    emailHtml = generateBasicEmailHtml(analysis, marketData, currency, locale, fxRates);
-			// }
+			if (sub.plan === 'basic') {
+				emailHtml = generateBasicEmailHtml(analysis, marketData, currency, locale, fxRates);
+			} else {
+				// Default to Pro
+				emailHtml = generateProEmailHtml(analysis, marketData, currency, locale, fxRates);
+			}
 
 			await sendEmail(env.RESEND_API_KEY, sub.email, `Daily Signals: ${Object.keys(analysis).join(', ')}`, emailHtml);
 		}));
