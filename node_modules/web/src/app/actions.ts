@@ -4,7 +4,7 @@
 import { redirect } from 'next/navigation';
 import Stripe from 'stripe';
 import { db } from '@/drizzle/db';
-import { subscribers } from '@metaldetectors/shared';
+import { subscribers } from '@/drizzle/schema';
 import { headers } from 'next/headers';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {

@@ -1,5 +1,5 @@
 import { db } from '@/drizzle/db';
-import { digests } from '@metaldetectors/shared';
+import { digests } from '@/drizzle/schema';
 import { desc } from 'drizzle-orm';
 import Link from 'next/link';
 
