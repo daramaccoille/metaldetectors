@@ -1,16 +1,11 @@
 
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import Stripe from 'stripe';
+// import Stripe from 'stripe'; // REMOVED
 import { db } from '@/drizzle/db';
 import { subscribers } from '@/drizzle/schema';
 import { eq } from 'drizzle-orm';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-01-27.acacia' as any, // Or '2023-10-16' based on your library version
-  // Use fetch implementation for edge compatibility
-  httpClient: Stripe.createFetchHttpClient(),
-});
+import { verifyStripeSignature } from '@/app/stripe-lite';
 
 export const runtime = 'edge';
 
@@ -18,14 +13,20 @@ export async function POST(req: Request) {
   const body = await req.text();
   const signature = (await headers()).get('Stripe-Signature') as string;
 
-  let event: Stripe.Event;
+  let event;
 
   try {
-    event = await stripe.webhooks.constructEventAsync(
+    if (!process.env.STRIPE_WEBHOOK_SECRET) {
+      throw new Error('STRIPE_WEBHOOK_SECRET is missing');
+    }
+
+    // Manual verification using Edge Crypto API
+    event = await verifyStripeSignature(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      process.env.STRIPE_WEBHOOK_SECRET
     );
+
   } catch (error: any) {
     console.error(`Webhook signature verification failed:`, error.message);
     return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
   // Handle the event
   switch (event.type) {
     case 'checkout.session.completed':
-      const session = event.data.object as Stripe.Checkout.Session;
+      const session = event.data.object;
       console.log(`Processing checkout session ${session.id}`);
 
       // Update subscriber active status
