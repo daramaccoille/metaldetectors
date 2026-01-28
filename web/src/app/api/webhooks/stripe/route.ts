@@ -7,12 +7,12 @@ import { subscribers } from '@/drizzle/schema';
 import { eq } from 'drizzle-orm';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-01-27.acacia' as any,
+  apiVersion: '2025-01-27.acacia' as any, // Or '2023-10-16' based on your library version
   // Use fetch implementation for edge compatibility
   httpClient: Stripe.createFetchHttpClient(),
 });
 
-export const runtime = 'edge';
+// export const runtime = 'edge'; // Commented out to align with page.tsx change for stability
 
 export async function POST(req: Request) {
   const body = await req.text();

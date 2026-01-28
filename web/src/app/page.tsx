@@ -4,7 +4,7 @@ import { subscribe } from './actions';
 
 import { headers } from 'next/headers';
 
-export const runtime = 'edge';
+// export const runtime = 'edge'; // Commented out to test regular runtime stability
 export const preferredRegion = 'auto';
 
 export default async function Home() {
