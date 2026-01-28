@@ -1,7 +1,7 @@
 
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { subscribers, digests } from '@metaldetectors/shared';
+import { subscribers, digests } from './drizzle/schema';
 import { eq } from 'drizzle-orm';
 import { getMetalAnalysis } from './ai/gemini';
 import { formatMetalPrice, SupportedCurrency, SupportedLocale } from './utils/format';

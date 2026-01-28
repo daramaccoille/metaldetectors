@@ -1,9 +1,5 @@
 {
   "name": "metaldetectors-monorepo", 
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "web",
-    "worker"
-  ]
+
 }
