@@ -24,7 +24,7 @@ export default function SubscribeForm({ currencySymbol, price, basicPrice }: Sub
             emailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
-
+        // TODO: Add loading state
         setLoading(true);
 
         try {
