@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  serverComponentsExternalPackages: ['stripe', 'resend', '@neondatabase/serverless'],
+  serverExternalPackages: ['stripe', 'resend', '@neondatabase/serverless'],
+  transpilePackages: ['@metaldetectors/shared'],
 
 };
 
