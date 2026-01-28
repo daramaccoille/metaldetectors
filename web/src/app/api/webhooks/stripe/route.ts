@@ -59,3 +59,8 @@ export async function POST(req: Request) {
 
   return new NextResponse(null, { status: 200 });
 }
+
+// Add GET handler for easy browser testing/pinging
+export async function GET(req: Request) {
+  return new NextResponse('Stripe Webhook Endpoint is Live ⚡️', { status: 200 });
+}
