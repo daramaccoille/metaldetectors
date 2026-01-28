@@ -1,0 +1,9 @@
+{
+  "name": "@metaldetectors/shared",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "private": true,
+  "dependencies": {
+    "drizzle-orm": "^0.45.1"
+  }
+}

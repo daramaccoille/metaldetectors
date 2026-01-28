@@ -1,0 +1,1 @@
+ALTER TABLE "subscribers" ADD COLUMN "plan" text DEFAULT 'pro';

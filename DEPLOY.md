@@ -50,3 +50,11 @@ Ensure `web/.env.local` contains ALL the variables from Section A!
 - Production (Cloudflare): `NEXT_PUBLIC_URL=https://metaldetectors.online`
 
 If you deploy with `http://localhost:3000` as the production URL, Stripe redirects will fail! ensure you set the specific Variable in Cloudflare Dashboard.
+
+## 5. Architecture Note: Client-Side Redirection
+To avoid "500 Internal Server Error" crashes common with Server Action redirects in Edge environments, this project uses a Client-Side Redirection strategy:
+1. User clicks Subscribe -> Client Component (`SubscribeForm`).
+2. Server Action (`startCheckoutSession`) creates Stripe Session and returns `{ url: string }`.
+3. Client Component receives URL and performs `window.location.href = url`.
+
+**Do not revert to `redirect()` inside the Server Action unless you move off Cloudflare Pages Edge Runtime.**
