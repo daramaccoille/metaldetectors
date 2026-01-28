@@ -1,7 +1,7 @@
 
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { subscribers } from '@metaldetectors/shared';
+import { subscribers, digests } from '@metaldetectors/shared';
 import { eq } from 'drizzle-orm';
 import { getMetalAnalysis } from './ai/gemini';
 import { formatMetalPrice, SupportedCurrency, SupportedLocale } from './utils/format';
@@ -67,9 +67,25 @@ export default {
 			return;
 		}
 
+
 		// 3. Fetch Active Subscribers
 		const sql = neon(env.DATABASE_URL);
 		const db = drizzle(sql);
+
+		// Archive today's digest
+		try {
+			const todayStr = new Date().toISOString().split('T')[0];
+			const archiveHtml = generateProEmailHtml(analysis, marketData, 'USD', 'en-US', fxRates);
+
+			await db.insert(digests).values({
+				date: todayStr,
+				contentHtml: archiveHtml
+			}).onConflictDoNothing();
+
+			console.log("Archived digest for", todayStr);
+		} catch (e) {
+			console.error("Failed to archive digest:", e);
+		}
 
 		// Fetch all active subscribers
 		const activeSubscribers = await db.select().from(subscribers).where(eq(subscribers.active, true));
