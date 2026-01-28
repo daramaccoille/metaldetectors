@@ -12,7 +12,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   httpClient: Stripe.createFetchHttpClient(),
 });
 
-// export const runtime = 'edge'; // Commented out to align with page.tsx change for stability
+export const runtime = 'edge';
 
 export async function POST(req: Request) {
   const body = await req.text();

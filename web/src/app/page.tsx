@@ -4,7 +4,8 @@ import { subscribe } from './actions';
 
 import { headers } from 'next/headers';
 
-// export const runtime = 'edge'; // Commented out to test regular runtime stability
+// Cloudflare Pages requires Edge runtime for dynamic functionality
+export const runtime = 'edge';
 export const preferredRegion = 'auto';
 
 export default async function Home() {
