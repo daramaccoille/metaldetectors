@@ -12,12 +12,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock', {
     httpClient: Stripe.createFetchHttpClient(),
 });
 
-export async function subscribe(formData: FormData) {
+// Renamed from subscribe to startCheckoutSession to reflect it returns a URL rather than redirecting directly
+export async function startCheckoutSession(formData: FormData) {
     const email = formData.get('email') as string;
     // 'plan' can be 'basic' or 'pro' (defaulting to pro if not specified)
     const plan = formData.get('plan') as string || 'pro';
 
-    if (!email) return;
+    if (!email) return { error: "Email is required" };
 
     // Attempt to detect locale from Cloudflare headers
     const headersList = await headers();
@@ -124,7 +125,8 @@ export async function subscribe(formData: FormData) {
             console.error("Could not list prices (Key might be invalid):", listErr);
         }
 
-        throw new Error(`Stripe Config Error: ${err.message}`);
+        // Return error object instead of throwing hard error (which causes 500)
+        return { error: `Stripe Config Error: ${err.message}` };
     }
 
     // Insert "Pending" subscriber
@@ -145,18 +147,16 @@ export async function subscribe(formData: FormData) {
 
     } catch (e: any) {
         console.error("FATAL: Failed to record subscriber info in DB", e);
-        // If we can't save to DB, user pays but we don't know who they are. 
-        // We should PROBABLY throw error to stop redirect, or allow it and rely on webhook to fix DB?
-        // Safest is to error out.
-        throw new Error(`Database Error: ${e.message}`);
+        // Return friendly error
+        return { error: `Database Error: ${e.message}` };
     }
 
     if (session.url) {
-        // Stripe Checkout URL already contains session ID but we can ensure email is prefilled if session config allows
-        // The customer_email parameter in session creation handles the prefilling logic automatically on Stripe's side
-        console.log(`Redirecting to: ${session.url}`);
-        redirect(session.url);
+        // Return URL for client-side redirection
+        return { url: session.url };
     }
+
+    return { error: "Failed to create checkout session URL" };
 }
 
 import { Resend } from 'resend';
