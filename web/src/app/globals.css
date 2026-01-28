@@ -66,6 +66,24 @@
   box-sizing: border-box;
 }
 
+@keyframes float-down {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+.animate-float-down {
+  animation-name: float-down;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
 body {
   background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, var(--background) 100%);
   color: var(--foreground);
