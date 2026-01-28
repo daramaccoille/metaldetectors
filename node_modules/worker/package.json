@@ -11,16 +11,18 @@
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.12.4",
+		"@vitest/runner": "^3.2.0",
+		"@vitest/snapshot": "^3.2.0",
 		"typescript": "^5.5.2",
 		"vitest": "~3.2.0",
 		"wrangler": "^4.60.0"
 	},
 	"dependencies": {
 		"@google/generative-ai": "^0.24.1",
+		"@metaldetectors/shared": "*",
 		"@neondatabase/serverless": "^1.0.2",
 		"drizzle-orm": "^0.45.1",
 		"resend": "^6.8.0",
-		"technicalindicators": "^3.1.0",
-		"@metaldetectors/shared": "*"
+		"technicalindicators": "^3.1.0"
 	}
 }
