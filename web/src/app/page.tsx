@@ -5,6 +5,7 @@ import { subscribe } from './actions';
 import { headers } from 'next/headers';
 
 export const runtime = 'edge';
+export const preferredRegion = 'auto';
 
 export default async function Home() {
   const headersList = await headers();

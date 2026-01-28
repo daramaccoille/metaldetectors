@@ -20,15 +20,15 @@ Cloudflare is transitioning to `OpenNext`. The warning is annoying but usually *
 These handle the **Website**, **Sign Up**, and **Subscription Management**.
 Go to: **Stats (Settings) > Environment variables > Production**
 
-| Variable | Value Hint |
-| :--- | :--- |
-| `NEXT_PUBLIC_URL` | `https://metaldetectors.online` |
-| `DATABASE_URL` | `postgresql://...` (Neon DB) |
-| `STRIPE_SECRET_KEY` | `sk_live_...` |
-| `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
-| `STRIPE_PRICE_ID_BASIC` | `price_1Su...` (The $1 Price ID) |
-| `STRIPE_PRICE_ID_PRO` | `price_1Su...` (The $5 Price ID) |
-| `RESEND_API_KEY` | `re_...` (For 'Manage Subscription' emails) |
+| Variable | Type | Value Hint |
+| :--- | :--- | :--- |
+| `NEXT_PUBLIC_URL` | **text** | `https://metaldetectors.online` |
+| `DATABASE_URL` | **secret** | `postgresql://...` (Neon DB) |
+| `STRIPE_SECRET_KEY` | **secret** | `sk_live_...` |
+| `STRIPE_WEBHOOK_SECRET` | **secret** | `whsec_...` |
+| `STRIPE_PRICE_ID_BASIC` | **text** | `price_1Su...` (The $1 Price ID) |
+| `STRIPE_PRICE_ID_PRO` | **text** | `price_1Su...` (The $5 Price ID) |
+| `RESEND_API_KEY` | **secret** | `re_...` (For 'Manage Subscription' emails) |
 
 ### **B. Backend (Cloudflare Worker)**
 This handles **Daily Email Sending** and **AI Analysis**.
@@ -44,3 +44,9 @@ These must be set via `npx wrangler secret put KEY` inside the `worker/` folder.
 ### **C. Local Development (`.env.local`)**
 This is for `npm run dev` on your machine.
 Ensure `web/.env.local` contains ALL the variables from Section A!
+
+**IMPORTANT:**
+- Locally: `NEXT_PUBLIC_URL=http://localhost:3000`
+- Production (Cloudflare): `NEXT_PUBLIC_URL=https://metaldetectors.online`
+
+If you deploy with `http://localhost:3000` as the production URL, Stripe redirects will fail! ensure you set the specific Variable in Cloudflare Dashboard.
