@@ -1,5 +1,5 @@
 
-import { pgTable, text, boolean, uuid, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, text, boolean, uuid, timestamp, numeric } from 'drizzle-orm/pg-core';
 
 export const subscribers = pgTable('subscribers', {
     id: uuid('id').defaultRandom().primaryKey(),
@@ -16,5 +16,13 @@ export const digests = pgTable('digests', {
     id: uuid('id').defaultRandom().primaryKey(),
     date: text('date').unique().notNull(), // Format: YYYY-MM-DD
     contentHtml: text('content_html').notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const metalReadings = pgTable('metal_readings', {
+    id: uuid('id').defaultRandom().primaryKey(),
+    metal: text('metal').notNull(), // XAU, XAG, etc.
+    price: numeric('price').notNull(),
+    currency: text('currency').default('USD'),
     createdAt: timestamp('created_at').defaultNow(),
 });

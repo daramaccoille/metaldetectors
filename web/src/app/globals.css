@@ -1,11 +1,11 @@
 :root {
   --background: #050505;
-  --foreground: #ffffff;
+  --foreground: #f9fafb;
 
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-highlight: rgba(255, 255, 255, 0.1);
-  --glass-blur: 20px;
+  --glass-bg: rgba(20, 20, 20, 0.6);
+  --glass-border: rgba(255, 215, 0, 0.1);
+  --glass-highlight: rgba(255, 215, 0, 0.3);
+  --glass-blur: 12px;
 
   --primary: #FFD700;
   /* Gold */
@@ -13,8 +13,32 @@
   /* Silver */
   --accent: #B87333;
   /* Copper */
+  --risk-high: #EF4444;
+  --risk-mod: #F59E0B;
+  --risk-low: #10B981;
 
-  --font-main: 'Inter', system-ui, sans-serif;
+  --font-main: 'Inter', Arial, system-ui, sans-serif;
+}
+
+::selection {
+  background: rgba(234, 179, 8, 0.3);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
 }
 
 /* Spinner Utilities must be outside :root */
@@ -85,7 +109,7 @@
 }
 
 body {
-  background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, var(--background) 100%);
+  background: var(--background);
   color: var(--foreground);
   font-family: var(--font-main);
   margin: 0;
@@ -119,36 +143,35 @@ h3 {
 
 /* Background Effects */
 .bg-ambience {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 500px;
+  background: linear-gradient(to bottom, rgba(113, 63, 18, 0.1), transparent);
   pointer-events: none;
+  z-index: 0;
 }
 
 .orb {
-  position: absolute;
-  top: -10%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  height: 800px;
-  background: rgba(255, 215, 0, 0.1);
-  filter: blur(120px);
-  border-radius: 50%;
+  display: none;
 }
 
 /* Glass Component */
-.glass {
+.glass, .glass-panel {
   background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
   border-radius: 24px;
-  /* Ensure padding prevents clipping */
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  /* overflow: hidden; Removed to prevent tooltip/popover clipping if any, usually helps with truncation issues */
+}
+
+.glass-panel-hover:hover {
+  border-color: var(--glass-highlight);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .hero-section {
@@ -164,22 +187,32 @@ h3 {
   font-weight: 700;
   margin-bottom: 1.5rem;
   line-height: 1.1;
-  background: linear-gradient(to bottom, #fff 0%, #888 100%);
+  color: #ffffff;
+}
+
+.title-gradient-text {
+  background: linear-gradient(to right, #fde047, #ca8a04);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
-  color: #a1a1aa;
-  margin-bottom: 2.5rem;
+  font-size: 1.125rem;
+  color: #9ca3af;
+  margin-bottom: 1rem;
   line-height: 1.6;
+  font-weight: 300;
 }
 
 .highlight-metals {
-  color: rgba(255, 215, 0, 0.8);
+  color: #eab308;
   font-weight: 500;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 3rem;
 }
 
 /* Form */
@@ -203,45 +236,48 @@ h3 {
 
 .email-input {
   padding: 1rem 1.5rem;
-  border-radius: 12px;
+  border-radius: 0.5rem;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
   width: 100%;
   font-size: 1rem;
-  transition: border-color 0.2s;
+  backdrop-filter: blur(4px);
+  transition: all 0.2s;
 }
 
 .email-input:focus {
   outline: none;
-  border-color: rgba(255, 215, 0, 0.5);
+  border-color: rgba(234, 179, 8, 0.5);
+  box-shadow: 0 0 0 1px rgba(234, 179, 8, 0.2);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary) 0%, #E6C200 100%);
+  background: linear-gradient(to right, #eab308, #ca8a04);
   color: #000;
-  border: none;
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  font-weight: 600;
+  border: 1px solid rgba(250, 204, 21, 0.2);
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.2s;
   white-space: nowrap;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+  box-shadow: 0 0 25px rgba(234, 179, 8, 0.3);
 }
 
 .btn-primary:hover {
-  transform: scale(1.02);
+  background: linear-gradient(to right, #facc15, #eab308);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
   background: transparent;
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  font-weight: 600;
+  border: 1px solid #3f3f46;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -249,21 +285,17 @@ h3 {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: scale(1.02);
+  background: #27272a;
+  border-color: #3f3f46;
 }
 
 /* Pricing Grid */
 .pricing-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.2);
+  gap: 2rem;
   text-align: left;
+  margin-top: 2rem;
 }
 
 @media (min-width: 768px) {
@@ -273,56 +305,81 @@ h3 {
 }
 
 .pricing-card {
-  padding: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .pricing-card.basic {
-  opacity: 0.7;
+  background: rgba(24, 24, 27, 0.5);
+  border: 1px solid #27272a;
+  padding: 0.25rem;
+  transition: all 0.3s ease;
 }
 
 .pricing-card.basic:hover {
-  opacity: 1;
+  border-color: #3f3f46;
 }
 
-@media (min-width: 768px) {
-  .pricing-card {
-    border-bottom: none;
-  }
-
-  .pricing-card.basic {
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-  }
+.pricing-card.basic .card-inner {
+  background: #0c0c0c;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .pricing-card.pro {
-  background: rgba(255, 255, 255, 0.05);
   position: relative;
+  padding: 2rem;
+  border-radius: 1rem;
+  background: #0c0c0c;
+  border: 1px solid rgba(234, 179, 8, 0.2);
+}
+
+.pricing-card.pro::before {
+  content: "";
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: linear-gradient(to bottom, #eab308, #a16207);
+  z-index: -1;
+  border-radius: 1rem;
+  opacity: 0.75;
+  filter: blur(4px);
+  transition: opacity 0.5s;
+}
+
+.pricing-card.pro:hover::before {
+  opacity: 1;
 }
 
 .badge {
   position: absolute;
   top: 0;
   right: 0;
-  background: var(--primary);
+  background: #eab308;
   color: black;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 700;
   padding: 0.25rem 0.75rem;
-  border-bottom-left-radius: 8px;
+  border-bottom-left-radius: 0.5rem;
+  border-top-right-radius: 0.75rem;
+  z-index: 10;
 }
 
 .card-title {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
   margin-bottom: 0.5rem;
 }
 
 .price {
-  font-size: 1.5rem;
+  font-size: 2.25rem;
   font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--primary);
+  margin-bottom: 1.5rem;
+  color: #facc15;
 }
 
 .price-period {
@@ -339,17 +396,18 @@ h3 {
   color: #d4d4d8;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
+  flex: 1;
 }
 
 .feature {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .check {
-  color: #4ade80;
+  color: #facc15;
 }
 
 .footer {

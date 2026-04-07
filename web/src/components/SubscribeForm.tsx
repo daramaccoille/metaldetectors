@@ -73,15 +73,16 @@ export default function SubscribeForm({ currencySymbol, price, basicPrice }: Sub
             <div className="pricing-grid">
                 {/* BASIC PLAN */}
                 <div className="pricing-card basic">
+                  <div className="card-inner">
                     <div style={{ width: '100%', height: '140px', overflow: 'hidden', borderRadius: '8px 8px 0 0', marginBottom: '16px' }}>
                         <img src="/basic.png" alt="Basic Plan" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                     <h3 className="card-title">Basic (nominal fee)</h3>
                     <div className="price">{currencySymbol}{basicPrice} <span className="price-period">/ month</span></div>
                     <ul className="features-list">
-                        <li className="feature">✓ XAU Only</li>
-                        <li className="feature">✓ Weekly Digest</li>
-                        <li className="feature">✓ Brief Predictions</li>
+                        <li className="feature"><span className="check">✓</span> XAU Only</li>
+                        <li className="feature"><span className="check">✓</span> Weekly Digest</li>
+                        <li className="feature"><span className="check">✓</span> Brief Predictions</li>
                     </ul>
 
                     <form onSubmit={(e) => handleSubscribe('basic', e)} className="mt-auto pt-4">
@@ -97,6 +98,7 @@ export default function SubscribeForm({ currencySymbol, price, basicPrice }: Sub
                             ) : 'Select Basic'}
                         </button>
                     </form>
+                  </div>
                 </div>
 
                 {/* PRO PLAN */}

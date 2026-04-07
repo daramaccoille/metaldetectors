@@ -1,7 +1,7 @@
 
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { subscribers, digests } from './drizzle/schema';
+import { subscribers, digests, metalReadings } from './drizzle/schema';
 import { eq } from 'drizzle-orm';
 import { getMetalAnalysis } from './ai/gemini';
 import { formatMetalPrice, SupportedCurrency, SupportedLocale } from './utils/format';
@@ -42,8 +42,35 @@ async function getFxRates() {
 	};
 }
 
+async function runHourlyTicker(env: Env) {
+	console.log("Starting hourly ticker...");
+	try {
+		const marketData = await getAllMarketData(env.FMP_API_KEY);
+
+		const sql = neon(env.DATABASE_URL);
+		const db = drizzle(sql);
+
+		const readings = Object.entries(marketData).map(([metal, data]) => ({
+			metal,
+			price: data.price.toString(),
+			currency: 'USD'
+		}));
+
+		if (readings.length > 0) {
+			await db.insert(metalReadings).values(readings);
+			console.log(`Saved ${readings.length} metal readings.`);
+		}
+	} catch (e) {
+		console.error("Hourly ticker failed:", e);
+	}
+}
+
 export default {
 	async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+		if (event.cron === "0 * * * *") {
+			await runHourlyTicker(env);
+			return;
+		}
 		console.log("Starting daily digest...");
 
 		// 1. Get Data
@@ -116,9 +143,11 @@ export default {
 	},
 
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+		const url = new URL(request.url);
+		const cron = url.searchParams.get("cron") || "manual";
 		try {
-			await this.scheduled({ cron: "manual", type: "scheduled", scheduledTime: Date.now() } as any, env, ctx);
-			return new Response("Daily digest logic executed successfully. Check logs.", { status: 200 });
+			await this.scheduled({ cron, type: "scheduled", scheduledTime: Date.now() } as any, env, ctx);
+			return new Response(`Scheduled logic executed with cron: "${cron}". Check logs.`, { status: 200 });
 		} catch (e: any) {
 			return new Response(`Error: ${e.message}\n${e.stack}`, { status: 500 });
 		}
