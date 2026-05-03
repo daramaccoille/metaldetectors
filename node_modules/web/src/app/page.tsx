@@ -61,8 +61,9 @@ export default async function Home() {
 
       <footer className="w-full border-t border-white/10 py-12 text-center text-zinc-500 text-sm flex gap-6 justify-center mt-12 bg-black/40 backdrop-blur-sm">
         <span>© 2026 metaldetectors.online</span>
-        <a href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
-        <a href="/terms" className="hover:text-gray-300 transition-colors">Terms of Service</a>
+        <a href="/login" className="hover:text-white transition-colors">Login</a>
+        <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+        <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
       </footer>
     </main>
   );

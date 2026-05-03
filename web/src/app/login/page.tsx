@@ -3,46 +3,54 @@ import Link from "next/link"
 
 export default function LoginPage() {
   return (
-    <main className="main-layout selection:bg-yellow-500/30">
-      <div className="bg-ambience"></div>
+    <main className="min-h-screen flex flex-col items-center justify-center bg-[#050505] relative overflow-hidden px-4 font-sans">
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-900/10 via-[#050505] to-[#050505] pointer-events-none"></div>
       
-      <header className="w-full max-w-7xl z-20 p-6 flex justify-between items-center text-sm font-medium tracking-wide border-b border-white/5 bg-black/50 backdrop-blur-md absolute top-0">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tighter text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
-          METALDETECTORS<span style={{ color: '#eab308' }}>.</span>
-        </Link>
-      </header>
-
-      <div className="w-full max-w-md border border-yellow-500/20 bg-black/60 backdrop-blur-md rounded-xl p-8 relative overflow-hidden group z-10">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-yellow-700"></div>
-        
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-200 via-yellow-500 to-yellow-700 text-transparent bg-clip-text text-center mb-2">
-          Sign In
-        </h1>
-        <p className="text-center text-gray-400 text-sm mb-8">Access your intelligence dashboard</p>
+      <Link className="absolute top-8 left-8 text-zinc-400 hover:text-white transition flex items-center gap-2 z-20" href="/">
+        &larr; Back to Home
+      </Link>
+      
+      <div className="w-full max-w-md p-8 glass-panel rounded-2xl bg-zinc-900/50 border border-zinc-800 z-10">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
+          <p className="text-zinc-400">Sign in to access your dashboard.</p>
+        </div>
         
         <form action={async (formData) => {
           "use server"
           await signIn("credentials", formData, { redirectTo: "/reports" })
-        }} className="space-y-5">
+        }} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
-            <input type="email" name="email" className="w-full bg-black/50 border border-gray-800 rounded p-3 text-white focus:border-yellow-500 focus:outline-none transition-colors" required />
+            <label className="block text-sm font-medium text-zinc-400 mb-2">Email</label>
+            <input 
+              type="email" 
+              name="email" 
+              placeholder="you@example.com" 
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-500/50 transition backdrop-blur-sm" 
+              required 
+            />
           </div>
           <div>
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-sm font-medium text-gray-400">Password</label>
-              <Link href="/forgot-password" className="text-xs text-yellow-500 hover:text-yellow-400 transition-colors">Forgot Password?</Link>
+            <div className="flex justify-between mb-2">
+              <label className="block text-sm font-medium text-zinc-400">Password</label>
+              <Link href="/forgot-password" className="text-xs text-yellow-500 hover:text-yellow-400">Forgot password?</Link>
             </div>
-            <input type="password" name="password" className="w-full bg-black/50 border border-gray-800 rounded p-3 text-white focus:border-yellow-500 focus:outline-none transition-colors" required />
+            <input 
+              type="password" 
+              name="password" 
+              placeholder="••••••••" 
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-500/50 transition backdrop-blur-sm" 
+              required 
+            />
           </div>
           
-          <button type="submit" className="btn-primary w-full mt-6 py-3">
-            Login
+          <button type="submit" className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3.5 rounded-lg transition shadow-[0_0_15px_rgba(234,179,8,0.2)]">
+            Sign In
           </button>
         </form>
 
-        <div className="mt-8 text-center text-sm text-gray-500">
-          Don't have an account? <Link href="/register" className="text-yellow-500 hover:text-yellow-400 font-medium ml-1 transition-colors">Sign Up</Link>
+        <div className="mt-8 text-center text-sm text-zinc-500">
+          Don't have an account? <Link href="/register" className="text-yellow-500 hover:text-yellow-400">Sign up</Link>
         </div>
       </div>
     </main>
