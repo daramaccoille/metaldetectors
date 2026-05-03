@@ -3,54 +3,58 @@ import Link from "next/link"
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-[#050505] relative overflow-hidden px-4 font-sans">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-900/10 via-[#050505] to-[#050505] pointer-events-none"></div>
+    <main className="main-layout">
+      <div className="bg-ambience"></div>
       
-      <Link className="absolute top-8 left-8 text-zinc-400 hover:text-white transition flex items-center gap-2 z-20" href="/">
-        &larr; Back to Home
-      </Link>
+      <div style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 20 }}>
+        <Link href="/" style={{ color: '#9ca3af', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          &larr; Back to Home
+        </Link>
+      </div>
       
-      <div className="w-full max-w-md p-8 glass-panel rounded-2xl bg-zinc-900/50 border border-zinc-800 z-10">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-zinc-400">Sign in to access your dashboard.</p>
+      <div className="glass-panel" style={{ width: '100%', maxWidth: '450px', padding: '2.5rem 2rem', zIndex: 10 }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <h1 className="hero-title" style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Welcome Back</h1>
+          <p className="hero-subtitle" style={{ fontSize: '1rem', margin: 0 }}>Sign in to access your dashboard.</p>
         </div>
         
         <form action={async (formData) => {
           "use server"
           await signIn("credentials", formData, { redirectTo: "/reports" })
-        }} className="space-y-6">
+        }} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
-            <label className="block text-sm font-medium text-zinc-400 mb-2">Email</label>
+            <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#9ca3af', marginBottom: '0.5rem' }}>Email</label>
             <input 
               type="email" 
               name="email" 
               placeholder="you@example.com" 
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-500/50 transition backdrop-blur-sm" 
+              className="email-input" 
+              style={{ width: '100%', padding: '0.75rem 1rem' }}
               required 
             />
           </div>
           <div>
-            <div className="flex justify-between mb-2">
-              <label className="block text-sm font-medium text-zinc-400">Password</label>
-              <Link href="/forgot-password" className="text-xs text-yellow-500 hover:text-yellow-400">Forgot password?</Link>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#9ca3af' }}>Password</label>
+              <Link href="/forgot-password" style={{ fontSize: '0.75rem', color: '#eab308', textDecoration: 'none' }}>Forgot password?</Link>
             </div>
             <input 
               type="password" 
               name="password" 
               placeholder="••••••••" 
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-500/50 transition backdrop-blur-sm" 
+              className="email-input" 
+              style={{ width: '100%', padding: '0.75rem 1rem' }}
               required 
             />
           </div>
           
-          <button type="submit" className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3.5 rounded-lg transition shadow-[0_0_15px_rgba(234,179,8,0.2)]">
+          <button type="submit" className="btn-primary" style={{ marginTop: '0.5rem', width: '100%' }}>
             Sign In
           </button>
         </form>
 
-        <div className="mt-8 text-center text-sm text-zinc-500">
-          Don't have an account? <Link href="/register" className="text-yellow-500 hover:text-yellow-400">Sign up</Link>
+        <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: '#71717a' }}>
+          Don't have an account? <Link href="/register" style={{ color: '#eab308', textDecoration: 'none', marginLeft: '0.25rem' }}>Sign up</Link>
         </div>
       </div>
     </main>
