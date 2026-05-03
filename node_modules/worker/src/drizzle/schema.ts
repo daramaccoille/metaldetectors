@@ -4,7 +4,7 @@ import { pgTable, text, boolean, uuid, timestamp, numeric } from 'drizzle-orm/pg
 export const subscribers = pgTable('subscribers', {
     id: uuid('id').defaultRandom().primaryKey(),
     email: text('email').unique().notNull(),
-    currency: text('currency').default('USD'), // USD, EUR, GBP
+    metal: text('metal').default('Gold'), // Gold, Silver, Platinum, Copper
     locale: text('locale').default('en-US'),
     stripeId: text('stripe_id'), // Used for Session ID initially
     stripeCustomerId: text('stripe_customer_id'), // Actual Customer ID (cus_...)

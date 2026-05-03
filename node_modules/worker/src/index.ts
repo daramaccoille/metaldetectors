@@ -121,7 +121,7 @@ export default {
 
 		// 4. Send Emails
 		const results = await Promise.allSettled(activeSubscribers.map(async (sub) => {
-			const currency = (sub.currency || 'USD') as SupportedCurrency;
+			const currency = 'USD' as SupportedCurrency;
 			const locale = (sub.locale || 'en-US') as SupportedLocale;
 
 			// Format Content using Templates
