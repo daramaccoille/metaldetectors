@@ -2,7 +2,7 @@ import { auth } from "@/auth"
 import { NextResponse } from "next/server"
 import fs from "fs"
 import path from "path"
-
+export const runtime = 'edge';
 export async function GET(request: Request) {
     const session = await auth();
     if (!session?.user) {
@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     }
 
     const fileBuffer = fs.readFileSync(filePath);
-    
+
     // Set appropriate content type
     let contentType = 'application/octet-stream';
     if (filename.endsWith('.pdf')) contentType = 'application/pdf';
