@@ -36,6 +36,9 @@ export default async function Home() {
         <div className="flex items-center gap-2 font-bold text-xl tracking-tighter text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
           METALDETECTORS<span style={{ color: '#eab308' }}>.</span>
         </div>
+        <div className="flex items-center gap-4">
+          <a href="/login" className="text-gray-300 hover:text-yellow-500 transition-colors font-medium">Sign In</a>
+        </div>
       </header>
 
       <div className="container hero-section z-10 pt-24">

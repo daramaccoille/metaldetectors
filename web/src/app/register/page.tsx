@@ -17,8 +17,16 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-md border border-yellow-500/20 bg-gray-900/40 rounded-xl p-8 relative overflow-hidden group">
+    <main className="main-layout selection:bg-yellow-500/30">
+      <div className="bg-ambience"></div>
+      
+      <header className="w-full max-w-7xl z-20 p-6 flex justify-between items-center text-sm font-medium tracking-wide border-b border-white/5 bg-black/50 backdrop-blur-md absolute top-0">
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tighter text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+          METALDETECTORS<span style={{ color: '#eab308' }}>.</span>
+        </Link>
+      </header>
+
+      <div className="w-full max-w-md border border-yellow-500/20 bg-black/60 backdrop-blur-md rounded-xl p-8 relative overflow-hidden group z-10 mt-12">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-500 to-yellow-700"></div>
         
         <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-200 via-yellow-500 to-yellow-700 text-transparent bg-clip-text text-center mb-2">
@@ -43,7 +51,7 @@ export default function RegisterPage() {
             <input type="password" name="password" className="w-full bg-black/50 border border-gray-800 rounded p-3 text-white focus:border-yellow-500 focus:outline-none transition-colors" required minLength={6} />
           </div>
           
-          <button type="submit" className="w-full bg-gradient-to-b from-yellow-400 to-yellow-600 text-black font-semibold py-3 rounded mt-4 hover:from-yellow-300 hover:to-yellow-500 transition-all shadow-[0_0_15px_rgba(234,179,8,0.15)] hover:shadow-[0_0_20px_rgba(234,179,8,0.3)]">
+          <button type="submit" className="btn-primary w-full mt-6 py-3">
             Sign Up
           </button>
         </form>
@@ -52,6 +60,6 @@ export default function RegisterPage() {
           Already have an account? <Link href="/login" className="text-yellow-500 hover:text-yellow-400 font-medium ml-1 transition-colors">Sign In</Link>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
