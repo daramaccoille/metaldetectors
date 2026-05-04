@@ -25,11 +25,23 @@ export default function ReportsClient({ reports, email }: { reports: Report[], e
   const [selectedStage, setSelectedStage] = useState<string>('All');
   const [selectedAgent, setSelectedAgent] = useState<string>('All');
 
+  // Helper to format 'bull.md' or 'complete_report.md' into 'Bull' or 'Complete Report'
+  const formatAgentName = (name: string) => {
+    return name
+      .replace('.md', '')
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   // Derive options
   const metals = ['All', ...Array.from(new Set(reports.map(r => r.metal)))];
   const dates = ['All', ...Array.from(new Set(reports.map(r => r.date)))];
   const stages = ['All', ...Array.from(new Set(reports.map(r => r.stage))).sort()];
-  const agents = ['All', ...Array.from(new Set(reports.map(r => r.agentName)))];
+  
+  // Create a unique list of original agentNames to map over, but display nicely
+  const rawAgents = Array.from(new Set(reports.map(r => r.agentName)));
+  const agents = ['All', ...rawAgents];
 
   // Filter reports
   const filteredReports = useMemo(() => {
@@ -116,7 +128,7 @@ export default function ReportsClient({ reports, email }: { reports: Report[], e
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label style={{ color: '#9ca3af', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase' }}>Report Type</label>
             <select style={selectStyle} value={selectedAgent} onChange={e => setSelectedAgent(e.target.value)}>
-              {agents.map(a => <option key={a} value={a} style={{ background: '#111' }}>{a}</option>)}
+              {agents.map(a => <option key={a} value={a} style={{ background: '#111' }}>{a === 'All' ? 'All' : formatAgentName(a)}</option>)}
             </select>
           </div>
           
@@ -150,7 +162,7 @@ export default function ReportsClient({ reports, email }: { reports: Report[], e
                    {batch.agents.map((agent: Report) => (
                      <div key={agent.id} style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.75rem', padding: '1rem', display: 'flex', flexDirection: 'column' }}>
                        <span style={{ fontSize: '0.75rem', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '0.25rem' }}>{agent.stage}</span>
-                       <h4 style={{ color: '#facc15', margin: '0 0 1rem 0', fontSize: '1.125rem' }}>{agent.agentName}</h4>
+                       <h4 style={{ color: '#facc15', margin: '0 0 1rem 0', fontSize: '1.125rem' }}>{formatAgentName(agent.agentName)}</h4>
                        
                        <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem', paddingTop: '1rem' }}>
                          <Link href={`/reports/${agent.id}`} style={{ flex: 1, textAlign: 'center', padding: '0.5rem', background: 'rgba(255,255,255,0.05)', color: 'white', borderRadius: '0.25rem', textDecoration: 'none', fontSize: '0.875rem', transition: 'background 0.2s' }}>
