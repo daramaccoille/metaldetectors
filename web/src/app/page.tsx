@@ -46,7 +46,7 @@ export default async function Home() {
           Daily AI <span className="title-gradient-text">Metals Signals.</span>
         </h1>
         <p className="hero-subtitle">
-          The 2-minute daily read for informed trading.
+          Access elite multi-agent intelligence. <strong style={{ color: '#fff' }}>Try your first week for just {currencySymbol}1.</strong>
         </p>
         <span className="highlight-metals">XAU • XAG • Cu • Pt • Pd</span>
 
@@ -56,6 +56,37 @@ export default async function Home() {
           price={price}
           basicPrice={basicPrice}
         />
+
+        <div style={{ marginTop: '6rem', marginBottom: '2rem' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', marginBottom: '1rem', textAlign: 'center' }}>Sample Intelligence</h2>
+          <p style={{ color: '#9ca3af', marginBottom: '3rem', textAlign: 'center' }}>Click to see exactly what you get every morning.</p>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+            <a href="/premium_report_sample.png" target="_blank" rel="noopener noreferrer" className="glass-panel glass-panel-hover" style={{ display: 'block', overflow: 'hidden', textDecoration: 'none', padding: '1rem', textAlign: 'left' }}>
+              <div style={{ width: '100%', height: '200px', borderRadius: '12px', overflow: 'hidden', marginBottom: '1rem' }}>
+                <img src="/premium_report_sample.png" alt="XAUUSD Trader Report" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </div>
+              <h3 style={{ color: '#eab308', fontSize: '1.125rem', fontWeight: 600, margin: '0 0 0.25rem 0' }}>Trader Agent</h3>
+              <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>Full XAUUSD technical breakdown</p>
+            </a>
+            
+            <a href="/premium_report_sample.png" target="_blank" rel="noopener noreferrer" className="glass-panel glass-panel-hover" style={{ display: 'block', overflow: 'hidden', textDecoration: 'none', padding: '1rem', textAlign: 'left' }}>
+              <div style={{ width: '100%', height: '200px', borderRadius: '12px', overflow: 'hidden', marginBottom: '1rem' }}>
+                <img src="/premium_report_sample.png" alt="Manager Report" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'hue-rotate(30deg)' }} />
+              </div>
+              <h3 style={{ color: '#eab308', fontSize: '1.125rem', fontWeight: 600, margin: '0 0 0.25rem 0' }}>Risk Manager</h3>
+              <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>Position sizing & stop-loss logic</p>
+            </a>
+
+            <a href="/premium_report_sample.png" target="_blank" rel="noopener noreferrer" className="glass-panel glass-panel-hover" style={{ display: 'block', overflow: 'hidden', textDecoration: 'none', padding: '1rem', textAlign: 'left' }}>
+              <div style={{ width: '100%', height: '200px', borderRadius: '12px', overflow: 'hidden', marginBottom: '1rem' }}>
+                <img src="/premium_report_sample.png" alt="Macro Bull Report" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'hue-rotate(300deg)' }} />
+              </div>
+              <h3 style={{ color: '#eab308', fontSize: '1.125rem', fontWeight: 600, margin: '0 0 0.25rem 0' }}>Macro Bull</h3>
+              <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>Long-term fundamental upside</p>
+            </a>
+          </div>
+        </div>
 
       </div>
 

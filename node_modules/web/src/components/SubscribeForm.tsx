@@ -108,7 +108,8 @@ export default function SubscribeForm({ currencySymbol, price, basicPrice }: Sub
                         <img src="/pro.png" alt="Pro Plan" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                     <h3 className="card-title" style={{ color: 'white' }}>Pro Analyst</h3>
-                    <div className="price">{currencySymbol}{price} <span className="price-period">/ month</span></div>
+                    <div className="price">{currencySymbol}1 <span className="price-period">for first 7 days</span></div>
+                    <div style={{ color: '#9ca3af', fontSize: '0.875rem', marginBottom: '1.5rem', textDecoration: 'line-through' }}>Then {currencySymbol}{price}/month</div>
                     <ul className="features-list">
                         <li className="feature"><span className="check">✓</span> All 5 Metals</li>
                         <li className="feature"><span className="check">✓</span> Best daily predictions</li>
@@ -125,7 +126,7 @@ export default function SubscribeForm({ currencySymbol, price, basicPrice }: Sub
                                     </svg>
                                     <span style={{ marginLeft: '8px' }}>Processing...</span>
                                 </>
-                            ) : 'Select Pro'}
+                            ) : `Unlock 7 Days for ${currencySymbol}1`}
                         </button>
                     </form>
                 </div>

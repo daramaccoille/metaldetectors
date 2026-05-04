@@ -90,8 +90,10 @@ export const verificationTokens = pgTable(
 export const agentReports = pgTable('agent_reports', {
     id: uuid('id').defaultRandom().primaryKey(),
     reportBatchId: text('report_batch_id').notNull(), // e.g., "XAUUSD_20260503_210554"
-    metal: text('metal').notNull(), // e.g., "Gold" or "XAUUSD"
-    agentName: text('agent_name').notNull(), // e.g., "trader", "bull", "manager"
+    metal: text('metal').notNull(), // e.g., "XAUUSD"
+    date: text('date').notNull(), // e.g., "2026-05-03" (for easy filtering)
+    stage: text('stage').notNull(), // e.g., "1_analysts", "2_research", "complete"
+    agentName: text('agent_name').notNull(), // e.g., "bull.md", "trader.md", "complete_report.md"
     contentMd: text('content_md').notNull(), // The actual markdown content
     createdAt: timestamp('created_at').defaultNow(),
 });
