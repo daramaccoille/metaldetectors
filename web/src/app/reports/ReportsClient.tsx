@@ -22,11 +22,13 @@ interface Batch {
 export default function ReportsClient({ reports, email }: { reports: Report[], email: string | null | undefined }) {
   const [selectedMetal, setSelectedMetal] = useState<string>('All');
   const [selectedDate, setSelectedDate] = useState<string>('All');
+  const [selectedStage, setSelectedStage] = useState<string>('All');
   const [selectedAgent, setSelectedAgent] = useState<string>('All');
 
   // Derive options
   const metals = ['All', ...Array.from(new Set(reports.map(r => r.metal)))];
   const dates = ['All', ...Array.from(new Set(reports.map(r => r.date)))];
+  const stages = ['All', ...Array.from(new Set(reports.map(r => r.stage))).sort()];
   const agents = ['All', ...Array.from(new Set(reports.map(r => r.agentName)))];
 
   // Filter reports
@@ -34,10 +36,11 @@ export default function ReportsClient({ reports, email }: { reports: Report[], e
     return reports.filter(r => {
       if (selectedMetal !== 'All' && r.metal !== selectedMetal) return false;
       if (selectedDate !== 'All' && r.date !== selectedDate) return false;
+      if (selectedStage !== 'All' && r.stage !== selectedStage) return false;
       if (selectedAgent !== 'All' && r.agentName !== selectedAgent) return false;
       return true;
     });
-  }, [reports, selectedMetal, selectedDate, selectedAgent]);
+  }, [reports, selectedMetal, selectedDate, selectedStage, selectedAgent]);
 
   // Group filtered reports by batchId for nice display
   const grouped = filteredReports.reduce((acc, report) => {
@@ -102,6 +105,12 @@ export default function ReportsClient({ reports, email }: { reports: Report[], e
             <label style={{ color: '#9ca3af', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase' }}>Date</label>
             <select style={selectStyle} value={selectedDate} onChange={e => setSelectedDate(e.target.value)}>
               {dates.map(d => <option key={d} value={d} style={{ background: '#111' }}>{d}</option>)}
+            </select>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ color: '#9ca3af', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase' }}>Stage</label>
+            <select style={selectStyle} value={selectedStage} onChange={e => setSelectedStage(e.target.value)}>
+              {stages.map(s => <option key={s} value={s} style={{ background: '#111' }}>{s}</option>)}
             </select>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

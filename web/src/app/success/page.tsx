@@ -1,9 +1,33 @@
 import Link from 'next/link';
 import { Confetti } from '@/components/Confetti';
+import { db } from '@/drizzle/db';
+import { subscribers, users } from '@/drizzle/schema';
+import { eq } from 'drizzle-orm';
+import PasswordSetupForm from './PasswordSetupForm';
 
 export const runtime = 'edge';
 
-export default function SuccessPage() {
+export default async function SuccessPage({ searchParams }: { searchParams: { session_id?: string } }) {
+    const sessionId = searchParams.session_id;
+    let subscriberEmail = null;
+    let accountExists = false;
+
+    if (sessionId) {
+        // Find the subscriber created by our checkout session
+        const sub = await db.query.subscribers.findFirst({
+            where: eq(subscribers.stripeId, sessionId)
+        });
+
+        if (sub) {
+            subscriberEmail = sub.email;
+            // Check if they already set up a password in the users table
+            const user = await db.query.users.findFirst({
+                where: eq(users.email, sub.email)
+            });
+            accountExists = !!user;
+        }
+    }
+
     return (
         <main className="main-layout flex flex-col items-center justify-center p-6 min-h-screen">
             <div className="bg-ambience"><div className="orb" /></div>
@@ -26,18 +50,17 @@ export default function SuccessPage() {
                     Your subscription is confirmed. Our AI is analyzing the markets as we speak.
                 </p>
 
-                <div className="bg-white/5 rounded-lg p-4 mb-8 border border-white/10 text-sm text-gray-400">
-                    <p className="mb-2"><strong className="text-white">Next Digest:</strong> Tomorrow, 07:00 UTC</p>
-                    <p>Check your inbox (and spam folder) for a confirmation email.</p>
-                </div>
+                {subscriberEmail && !accountExists && (
+                    <PasswordSetupForm email={subscriberEmail} />
+                )}
 
                 <div className="flex flex-col gap-3">
-                    <Link href="/archive" className="btn-primary flex items-center justify-center gap-2">
-                        View Past Signals
+                    <Link href="/reports" className="btn-primary flex items-center justify-center gap-2">
+                        Go to Terminal
                         <span>→</span>
                     </Link>
                     <Link href="/" className="btn-secondary">
-                        Return to Dashboard
+                        Return to Homepage
                     </Link>
                 </div>
             </div>
