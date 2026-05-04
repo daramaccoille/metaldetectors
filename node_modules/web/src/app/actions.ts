@@ -97,12 +97,12 @@ export async function startCheckoutSession(formData: FormData) {
             email: email,
             stripeId: session.id, // session.id is available in the response too
             active: false,
-            currency: currency,
+            metal: 'Gold',
             locale: locale,
             plan: plan
         }).onConflictDoUpdate({
             target: subscribers.email,
-            set: { stripeId: session.id, currency, locale, plan } // Update pending session
+            set: { stripeId: session.id, metal: 'Gold', locale, plan } // Update pending session
         });
 
         console.log("Subscriber record created/updated successfully.");

@@ -2,7 +2,24 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 
-export default function ReportsClient({ reports, email }: { reports: any[], email: string | null | undefined }) {
+interface Report {
+  id: string;
+  reportBatchId: string;
+  metal: string;
+  date: string;
+  stage: string;
+  agentName: string;
+  contentMd: string;
+}
+
+interface Batch {
+  batchId: string;
+  metal: string;
+  date: string;
+  agents: Report[];
+}
+
+export default function ReportsClient({ reports, email }: { reports: Report[], email: string | null | undefined }) {
   const [selectedMetal, setSelectedMetal] = useState<string>('All');
   const [selectedDate, setSelectedDate] = useState<string>('All');
   const [selectedAgent, setSelectedAgent] = useState<string>('All');
@@ -34,7 +51,7 @@ export default function ReportsClient({ reports, email }: { reports: any[], emai
     }
     acc[report.reportBatchId].agents.push(report);
     return acc;
-  }, {} as Record<string, any>);
+  }, {} as Record<string, Batch>);
 
   const batches = Object.values(grouped);
 
@@ -108,7 +125,7 @@ export default function ReportsClient({ reports, email }: { reports: any[], emai
                <p style={{ color: '#9ca3af' }}>No reports match your selected filters.</p>
             </div>
           ) : (
-            batches.map((batch: any) => (
+            batches.map((batch: Batch) => (
               <div key={batch.batchId} className="glass-panel glass-panel-hover" style={{ padding: '2rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                    <div>
@@ -121,7 +138,7 @@ export default function ReportsClient({ reports, email }: { reports: any[], emai
                 </div>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
-                   {batch.agents.map((agent: any) => (
+                   {batch.agents.map((agent: Report) => (
                      <div key={agent.id} style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.75rem', padding: '1rem', display: 'flex', flexDirection: 'column' }}>
                        <span style={{ fontSize: '0.75rem', color: '#9ca3af', textTransform: 'uppercase', marginBottom: '0.25rem' }}>{agent.stage}</span>
                        <h4 style={{ color: '#facc15', margin: '0 0 1rem 0', fontSize: '1.125rem' }}>{agent.agentName}</h4>
