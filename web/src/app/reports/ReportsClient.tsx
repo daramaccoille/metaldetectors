@@ -130,9 +130,9 @@ export default function ReportsClient({ reports, email }: { reports: any[], emai
                          <Link href={`/reports/${agent.id}`} style={{ flex: 1, textAlign: 'center', padding: '0.5rem', background: 'rgba(255,255,255,0.05)', color: 'white', borderRadius: '0.25rem', textDecoration: 'none', fontSize: '0.875rem', transition: 'background 0.2s' }}>
                            Read
                          </Link>
-                         <button style={{ flex: 1, padding: '0.5rem', background: 'rgba(234,179,8,0.1)', color: '#eab308', border: '1px solid rgba(234,179,8,0.2)', borderRadius: '0.25rem', cursor: 'pointer', fontSize: '0.875rem', transition: 'background 0.2s' }}>
+                         <a href={`/api/reports/download?id=${agent.id}`} download style={{ flex: 1, padding: '0.5rem', background: 'rgba(234,179,8,0.1)', color: '#eab308', border: '1px solid rgba(234,179,8,0.2)', borderRadius: '0.25rem', cursor: 'pointer', fontSize: '0.875rem', transition: 'background 0.2s', textAlign: 'center', textDecoration: 'none', display: 'block' }}>
                            .MD
-                         </button>
+                         </a>
                        </div>
                      </div>
                    ))}
