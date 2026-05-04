@@ -32,12 +32,12 @@ export default async function Home() {
       <div className="bg-ambience"></div>
 
       {/* Header */}
-      <header className="w-full max-w-7xl z-20 p-6 flex justify-between items-center text-sm font-medium tracking-wide border-b border-white/5 bg-black/50 backdrop-blur-md absolute top-0">
-        <div className="flex items-center gap-2 font-bold text-xl tracking-tighter text-white" style={{ fontFamily: 'Inter, sans-serif' }}>
+      <header style={{ width: '100%', maxWidth: '80rem', zIndex: 20, padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem', fontWeight: 500, letterSpacing: '0.025em', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', position: 'absolute', top: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '-0.05em', color: 'white', fontFamily: 'Inter, sans-serif' }}>
           METALDETECTORS<span style={{ color: '#eab308' }}>.</span>
         </div>
-        <div className="flex items-center gap-4">
-          <a href="/login" className="text-gray-300 hover:text-yellow-500 transition-colors font-medium">Sign In</a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <a href="/login" style={{ color: '#d1d5db', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = '#eab308'} onMouseOut={(e) => e.currentTarget.style.color = '#d1d5db'}>Sign In</a>
         </div>
       </header>
 
@@ -59,11 +59,11 @@ export default async function Home() {
 
       </div>
 
-      <footer className="w-full border-t border-white/10 py-12 text-center text-zinc-500 text-sm flex gap-6 justify-center mt-12 bg-black/40 backdrop-blur-sm">
+      <footer style={{ width: '100%', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '3rem 0', textAlign: 'center', color: '#71717a', fontSize: '0.875rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', marginTop: '3rem', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}>
         <span>© 2026 metaldetectors.online</span>
-        <a href="/login" className="hover:text-white transition-colors">Login</a>
-        <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-        <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
+        <a href="/login" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#71717a'}>Login</a>
+        <a href="/privacy" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#71717a'}>Privacy Policy</a>
+        <a href="/terms" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#71717a'}>Terms of Service</a>
       </footer>
     </main>
   );
