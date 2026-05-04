@@ -19,7 +19,14 @@ export async function POST(request: Request) {
             return new NextResponse("Invalid payload, expected { reports: [...] }", { status: 400 });
         }
 
-        const reportsToInsert = body.reports.map((r: any) => ({
+        const reportsToInsert = body.reports.map((r: {
+            reportBatchId: string;
+            metal: string;
+            date: string;
+            stage: string;
+            agentName: string;
+            contentMd: string;
+        }) => ({
             reportBatchId: r.reportBatchId,
             metal: r.metal,
             date: r.date,

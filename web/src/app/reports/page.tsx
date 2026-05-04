@@ -19,6 +19,6 @@ export default async function ReportsPage() {
   const allReports = await db.select().from(agentReports).orderBy(desc(agentReports.createdAt));
   
   return (
-    <ReportsClient reports={allReports} email={session.user.email} />
+    <ReportsClient reports={allReports} email={session.user.email || null} />
   )
 }
