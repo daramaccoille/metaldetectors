@@ -37,7 +37,7 @@ export default async function Home() {
           METALDETECTORS<span style={{ color: '#eab308' }}>.</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <a href="/login" style={{ color: '#d1d5db', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = '#eab308'} onMouseOut={(e) => e.currentTarget.style.color = '#d1d5db'}>Sign In</a>
+          <a href="/login" style={{ color: '#d1d5db', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }}>Sign In</a>
         </div>
       </header>
 
@@ -92,9 +92,9 @@ export default async function Home() {
 
       <footer style={{ width: '100%', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '3rem 0', textAlign: 'center', color: '#71717a', fontSize: '0.875rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', marginTop: '3rem', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}>
         <span>© 2026 metaldetectors.online</span>
-        <a href="/login" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#71717a'}>Login</a>
-        <a href="/privacy" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#71717a'}>Privacy Policy</a>
-        <a href="/terms" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = '#fff'} onMouseOut={(e) => e.currentTarget.style.color = '#71717a'}>Terms of Service</a>
+        <a href="/login" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Login</a>
+        <a href="/privacy" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Privacy Policy</a>
+        <a href="/terms" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Terms of Service</a>
       </footer>
     </main>
   );
