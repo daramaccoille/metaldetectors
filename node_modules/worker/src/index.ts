@@ -1,7 +1,7 @@
 
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
-import { subscribers, digests, metalReadings } from './drizzle/schema';
+import { users, digests, metalReadings } from './drizzle/schema';
 import { eq } from 'drizzle-orm';
 import { getMetalAnalysis } from './ai/gemini';
 import { formatMetalPrice, SupportedCurrency, SupportedLocale } from './utils/format';
@@ -118,7 +118,7 @@ export default {
 		}
 
 		// Fetch all active subscribers
-		const activeSubscribers = await db.select().from(subscribers).where(eq(subscribers.active, true));
+		const activeSubscribers = await db.select().from(users).where(eq(users.active, true));
 
 		console.log(`Found ${activeSubscribers.length} active subscribers.`);
 

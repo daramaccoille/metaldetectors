@@ -1,7 +1,7 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { db } from "@/drizzle/db"
-import { agentReports, subscribers } from "@/drizzle/schema"
+import { agentReports, users } from "@/drizzle/schema"
 import { desc, eq } from "drizzle-orm"
 import ReportsClient from "./ReportsClient"
 
@@ -17,8 +17,8 @@ export default async function ReportsPage() {
 
   // Enforce access control - verify active subscription
   if (session.user.email) {
-    const subscriber = await db.query.subscribers.findFirst({
-      where: eq(subscribers.email, session.user.email)
+    const subscriber = await db.query.users.findFirst({
+      where: eq(users.email, session.user.email)
     });
     
     if (!subscriber?.active) {

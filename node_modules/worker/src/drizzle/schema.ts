@@ -1,9 +1,13 @@
-
 import { pgTable, text, boolean, uuid, timestamp, numeric } from 'drizzle-orm/pg-core';
 
-export const subscribers = pgTable('subscribers', {
-    id: uuid('id').defaultRandom().primaryKey(),
+export const users = pgTable('user', {
+    id: text('id').primaryKey(),
+    name: text('name'),
     email: text('email').unique().notNull(),
+    emailVerified: timestamp('emailVerified', { mode: 'date' }),
+    passwordHash: text('password_hash'),
+    image: text('image'),
+    // Subscription Metadata
     metal: text('metal').default('Gold'), // Gold, Silver, Platinum, Copper
     locale: text('locale').default('en-US'),
     stripeId: text('stripe_id'), // Used for Session ID initially

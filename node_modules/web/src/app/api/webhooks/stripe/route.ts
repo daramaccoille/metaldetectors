@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 // import Stripe from 'stripe'; // REMOVED
 import { db } from '@/drizzle/db';
-import { subscribers } from '@/drizzle/schema';
+import { users } from '@/drizzle/schema';
 import { eq } from 'drizzle-orm';
 import { verifyStripeSignature } from '@/app/stripe-lite';
 
@@ -41,12 +41,12 @@ export async function POST(req: Request) {
       // Update subscriber active status
       // We rely on the session.id being stored in the stripeId column during the initial subscribe action
       try {
-        await db.update(subscribers)
+        await db.update(users)
           .set({
             active: true,
             stripeCustomerId: session.customer as string
           })
-          .where(eq(subscribers.stripeId, session.id));
+          .where(eq(users.stripeId, session.id));
         console.log(`Activated subscriber with session ID: ${session.id}`);
       } catch (err) {
         console.error('Error updating subscriber:', err);
@@ -58,9 +58,9 @@ export async function POST(req: Request) {
       const subscription = event.data.object;
       console.log(`Processing subscription deleted for customer ${subscription.customer}`);
       try {
-        await db.update(subscribers)
+        await db.update(users)
           .set({ active: false })
-          .where(eq(subscribers.stripeCustomerId, subscription.customer as string));
+          .where(eq(users.stripeCustomerId, subscription.customer as string));
         console.log(`Deactivated subscriber with customer ID: ${subscription.customer}`);
       } catch (err) {
         console.error('Error deactivating subscriber:', err);

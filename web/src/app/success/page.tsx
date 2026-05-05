@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Confetti } from '@/components/Confetti';
 import { db } from '@/drizzle/db';
-import { subscribers, users } from '@/drizzle/schema';
+import { users } from '@/drizzle/schema';
 import { eq } from 'drizzle-orm';
 import PasswordSetupForm from './PasswordSetupForm';
 
@@ -14,17 +14,14 @@ export default async function SuccessPage({ searchParams }: { searchParams: { se
 
     if (sessionId) {
         // Find the subscriber created by our checkout session
-        const sub = await db.query.subscribers.findFirst({
-            where: eq(subscribers.stripeId, sessionId)
+        const user = await db.query.users.findFirst({
+            where: eq(users.stripeId, sessionId)
         });
 
-        if (sub) {
-            subscriberEmail = sub.email;
-            // Check if they already set up a password in the users table
-            const user = await db.query.users.findFirst({
-                where: eq(users.email, sub.email)
-            });
-            accountExists = !!user;
+        if (user) {
+            subscriberEmail = user.email;
+            // Check if they already set up a password
+            accountExists = !!user.passwordHash;
         }
     }
 

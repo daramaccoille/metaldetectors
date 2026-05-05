@@ -1,16 +1,24 @@
 import { pgTable, text, boolean, uuid, timestamp, primaryKey, integer } from 'drizzle-orm/pg-core';
 import type { AdapterAccountType } from "next-auth/adapters"
 
-export const subscribers = pgTable('subscribers', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  email: text('email').unique().notNull(),
+// --- Consolidated User & Subscription Schema ---
+export const users = pgTable("user", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name"),
+  email: text("email").unique().notNull(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  passwordHash: text("password_hash"),
+  image: text("image"),
+  // Subscription Metadata
   metal: text('metal').default('Gold'), // Gold, Silver, Platinum, Copper
   locale: text('locale').default('en-US'),
   stripeId: text('stripe_id'), // Used for Session ID initially
   stripeCustomerId: text('stripe_customer_id'), // Actual Customer ID (cus_...)
   active: boolean('active').default(false),
   plan: text('plan').default('pro'), // 'basic' | 'pro'
-});
+})
 
 export const digests = pgTable('digests', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -18,19 +26,6 @@ export const digests = pgTable('digests', {
   contentHtml: text('content_html').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
 });
-
-// --- NextAuth Schema ---
-
-export const users = pgTable("user", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name"),
-  email: text("email").unique(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
-  passwordHash: text("password_hash"),
-  image: text("image"),
-})
 
 export const passwordResetTokens = pgTable("password_reset_tokens", {
   id: uuid("id").defaultRandom().primaryKey(),

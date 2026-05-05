@@ -4,7 +4,7 @@
 import { redirect } from 'next/navigation';
 // import Stripe from 'stripe'; // REMOVED to save 1.5MB
 import { db } from '@/drizzle/db';
-import { subscribers } from '@/drizzle/schema';
+import { users } from '@/drizzle/schema';
 import { headers } from 'next/headers';
 import { eq } from 'drizzle-orm';
 import { createCheckoutSession, createPortalSession } from './stripe-lite';
@@ -53,8 +53,8 @@ export async function startCheckoutSession(formData: FormData) {
     let existingUser;
     try {
         console.log("Checking DB for existing user...");
-        existingUser = await db.query.subscribers.findFirst({
-            where: eq(subscribers.email, email)
+        existingUser = await db.query.users.findFirst({
+            where: eq(users.email, email)
         });
         console.log("DB Check Complete. Found:", !!existingUser);
     } catch (dbError: any) {
@@ -93,7 +93,7 @@ export async function startCheckoutSession(formData: FormData) {
 
     // Insert "Pending" subscriber
     try {
-        await db.insert(subscribers).values({
+        await db.insert(users).values({
             email: email,
             stripeId: session.id, // session.id is available in the response too
             active: false,
@@ -101,7 +101,7 @@ export async function startCheckoutSession(formData: FormData) {
             locale: locale,
             plan: plan
         }).onConflictDoUpdate({
-            target: subscribers.email,
+            target: users.email,
             set: { stripeId: session.id, metal: 'Gold', locale, plan } // Update pending session
         });
 
@@ -124,8 +124,8 @@ export async function manageSubscription(formData: FormData) {
     if (!email) return;
 
     // 1. Look up user
-    const user = await db.query.subscribers.findFirst({
-        where: eq(subscribers.email, email)
+    const user = await db.query.users.findFirst({
+        where: eq(users.email, email)
     });
 
     if (!user || !user.stripeCustomerId) {
