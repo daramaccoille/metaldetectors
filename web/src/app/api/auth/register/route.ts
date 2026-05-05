@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import { db } from '@/drizzle/db';
 import { users } from '@/drizzle/schema';
 import { eq } from 'drizzle-orm';
+import { hashPassword } from '@/lib/password';
 
-// Node.js runtime - bcryptjs cannot run on Edge
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 
 export async function POST(req: Request) {
     const body = await req.json();
@@ -20,9 +20,7 @@ export async function POST(req: Request) {
     }
 
     try {
-        // Lazy-load bcryptjs at request time so it stays out of the edge bundle
-        const bcrypt = await import('bcryptjs');
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwordHash = await hashPassword(password);
 
         await db.insert(users).values({
             email,

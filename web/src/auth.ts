@@ -5,7 +5,7 @@ import { users } from "./drizzle/schema"
 import { eq } from "drizzle-orm"
 import Resend from "next-auth/providers/resend"
 import Credentials from "next-auth/providers/credentials"
-import bcrypt from "bcryptjs"
+import { verifyPassword } from "./lib/password"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db),
@@ -25,7 +25,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!user || !user.passwordHash) return null;
 
-        const isPasswordValid = await bcrypt.compare(
+        const isPasswordValid = await verifyPassword(
           credentials.password as string,
           user.passwordHash
         );
