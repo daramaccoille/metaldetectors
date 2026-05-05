@@ -34,13 +34,20 @@ export default function ReportsClient({ reports, email }: { reports: Report[], e
       .join(' ');
   };
 
-  // Derive options
+  // Derive options dynamically to create cascading dependent filters
   const metals = ['All', ...Array.from(new Set(reports.map(r => r.metal)))];
-  const dates = ['All', ...Array.from(new Set(reports.map(r => r.date)))];
-  const stages = ['All', ...Array.from(new Set(reports.map(r => r.stage))).sort()];
+
+  // Dates depend on Metal
+  const reportsForDates = selectedMetal === 'All' ? reports : reports.filter(r => r.metal === selectedMetal);
+  const dates = ['All', ...Array.from(new Set(reportsForDates.map(r => r.date)))];
+
+  // Stages depend on Metal + Date
+  const reportsForStages = reportsForDates.filter(r => selectedDate === 'All' || r.date === selectedDate);
+  const stages = ['All', ...Array.from(new Set(reportsForStages.map(r => r.stage))).sort()];
   
-  // Create a unique list of original agentNames to map over, but display nicely
-  const rawAgents = Array.from(new Set(reports.map(r => r.agentName)));
+  // Agents depend on Metal + Date + Stage
+  const reportsForAgents = reportsForStages.filter(r => selectedStage === 'All' || r.stage === selectedStage);
+  const rawAgents = Array.from(new Set(reportsForAgents.map(r => r.agentName)));
   const agents = ['All', ...rawAgents];
 
   // Filter reports
