@@ -1,23 +1,13 @@
-import { RSI, BollingerBands } from 'technicalindicators';
+import { calculateRSI, calculateBollingerBands } from './indicators';
 import { MarketData } from '../types';
 
 // Helper to calculate technicals from raw close prices
 export function calculateTechnicals(closes: number[], currentPrice: number): Partial<MarketData> {
-    // RSI (14 period)
-    const rsiInput = {
-        values: closes,
-        period: 14
-    };
-    const rsiValues = RSI.calculate(rsiInput);
+    const rsiValues = calculateRSI(closes, 14);
     const currentRsi = rsiValues[rsiValues.length - 1] || 50;
 
     // Bollinger Bands (20 period, 2 stdDev)
-    const bbInput = {
-        period: 20,
-        values: closes,
-        stdDev: 2
-    };
-    const bbValues = BollingerBands.calculate(bbInput);
+    const bbValues = calculateBollingerBands(closes, 20, 2);
     const lastBB = bbValues[bbValues.length - 1];
 
     let bbStatus: MarketData['bb_status'] = 'within_range';
