@@ -36,8 +36,9 @@ export default async function Home() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '1.25rem', letterSpacing: '-0.05em', color: 'white', fontFamily: 'Inter, sans-serif' }}>
           METALDETECTORS<span style={{ color: '#eab308' }}>.</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <a href="/login" style={{ color: '#d1d5db', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }}>Sign In</a>
+          <a href="/register" style={{ background: '#eab308', color: '#000', padding: '0.5rem 1rem', borderRadius: '0.5rem', textDecoration: 'none', fontWeight: 600, transition: 'transform 0.2s' }} className="hover:scale-105 transition-transform">Sign Up</a>
         </div>
       </header>
 
@@ -93,6 +94,7 @@ export default async function Home() {
       <footer style={{ width: '100%', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '3rem 0', textAlign: 'center', color: '#71717a', fontSize: '0.875rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', marginTop: '3rem', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}>
         <span>© 2026 metaldetectors.online</span>
         <a href="/login" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Login</a>
+        <a href="/register" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Register</a>
         <a href="/privacy" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Privacy Policy</a>
         <a href="/terms" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Terms of Service</a>
       </footer>
