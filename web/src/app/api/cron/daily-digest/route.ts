@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/drizzle/db';
-import { agentReports, subscribers } from '@/drizzle/schema';
+import { agentReports, users } from '@/drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
+import { Resend } from 'resend';
 
 export const runtime = 'edge';
 
@@ -76,17 +77,17 @@ export async function GET(req: Request) {
       </div>
     `;
 
-    // 5. Fetch all active subscribers
-    const activeSubscribers = await db.query.subscribers.findMany({
-      where: eq(subscribers.active, true)
+    // 5. Fetch all active user
+    const activeuser = await db.query.users.findMany({
+      where: eq(users.active, true)
     });
 
-    if (activeSubscribers.length === 0) {
-      return new NextResponse('No active subscribers to send to.', { status: 200 });
+    if (activeuser.length === 0) {
+      return new NextResponse('No active user to send to.', { status: 200 });
     }
 
     // 6. Blast emails using Resend REST API (no SDK needed - keeps edge bundle tiny)
-    const emailsToSend = activeSubscribers.map(sub => ({
+    const emailsToSend = activeuser.map(sub => ({
       from: 'Intelligence Terminal <reports@metaldetectors.online>',
       to: [sub.email],
       subject: `Metal Detectors Daily Synthesis: ${targetDate}`,
