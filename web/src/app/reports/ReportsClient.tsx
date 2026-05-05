@@ -1,7 +1,12 @@
 "use client"
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import ReportsChart from './ReportsChart';
+import dynamic from 'next/dynamic';
+
+const ReportsChart = dynamic(() => import('./ReportsChart'), {
+  ssr: false,
+  loading: () => <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>Loading visualization...</div>
+});
 
 interface Report {
   id: string;
