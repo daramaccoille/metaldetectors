@@ -38,7 +38,7 @@ export default async function Home() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           <a href="/login" style={{ color: '#d1d5db', textDecoration: 'none', fontWeight: 500, transition: 'color 0.2s' }}>Sign In</a>
-          <a href="/register" style={{ background: '#eab308', color: '#000', padding: '0.5rem 1rem', borderRadius: '0.5rem', textDecoration: 'none', fontWeight: 600, transition: 'transform 0.2s' }} className="hover:scale-105 transition-transform">Sign Up</a>
+          <a href="/register" style={{ background: '#eab308', color: '#000', padding: '0.5rem 1rem', borderRadius: '0.5rem', textDecoration: 'none', fontWeight: 600, transition: 'transform 0.2s' }} className="hover:scale-105 transition-transform">Register</a>
         </div>
       </header>
 
@@ -61,7 +61,7 @@ export default async function Home() {
         <div style={{ marginTop: '6rem', marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#fff', marginBottom: '1rem', textAlign: 'center' }}>Sample Intelligence</h2>
           <p style={{ color: '#9ca3af', marginBottom: '3rem', textAlign: 'center' }}>Click to see exactly what you get every morning.</p>
-          
+
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
             <a href="/premium_report_sample.png" target="_blank" rel="noopener noreferrer" className="glass-panel glass-panel-hover" style={{ display: 'block', overflow: 'hidden', textDecoration: 'none', padding: '1rem', textAlign: 'left' }}>
               <div style={{ width: '100%', height: '200px', borderRadius: '12px', overflow: 'hidden', marginBottom: '1rem' }}>
@@ -70,7 +70,7 @@ export default async function Home() {
               <h3 style={{ color: '#eab308', fontSize: '1.125rem', fontWeight: 600, margin: '0 0 0.25rem 0' }}>Trader Agent</h3>
               <p style={{ color: '#9ca3af', fontSize: '0.875rem', margin: 0 }}>Full XAUUSD technical breakdown</p>
             </a>
-            
+
             <a href="/premium_report_sample.png" target="_blank" rel="noopener noreferrer" className="glass-panel glass-panel-hover" style={{ display: 'block', overflow: 'hidden', textDecoration: 'none', padding: '1rem', textAlign: 'left' }}>
               <div style={{ width: '100%', height: '200px', borderRadius: '12px', overflow: 'hidden', marginBottom: '1rem' }}>
                 <img src="/premium_report_sample.png" alt="Manager Report" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'hue-rotate(30deg)' }} />
@@ -93,7 +93,7 @@ export default async function Home() {
 
       <footer style={{ width: '100%', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '3rem 0', textAlign: 'center', color: '#71717a', fontSize: '0.875rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', marginTop: '3rem', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}>
         <span>© 2026 metaldetectors.online</span>
-        <a href="/login" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Login</a>
+        <a href="/login" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Sign In</a>
         <a href="/register" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Register</a>
         <a href="/privacy" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Privacy Policy</a>
         <a href="/terms" style={{ color: '#71717a', textDecoration: 'none', transition: 'color 0.2s' }}>Terms of Service</a>
