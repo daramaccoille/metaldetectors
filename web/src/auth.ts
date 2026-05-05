@@ -18,7 +18,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
-        
+
         const user = await db.query.users.findFirst({
           where: eq(users.email, credentials.email as string)
         });
@@ -35,7 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     }),
     Resend({
-      from: "noreply@metaldetectors.com",
+      from: "noreply@metaldetectors.online",
     }),
   ],
 })
