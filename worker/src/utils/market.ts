@@ -31,23 +31,30 @@ export function calculateTechnicals(closes: number[], currentPrice: number): Par
 // FMP Symbols: Gold (XAUUSD), Silver (XAGUSD), Copper (HGUSD), Platinum (PLUSD), Palladium (PAUSD)
 
 const SYMBOL_MAP: Record<string, string> = {
-    'XAU': 'XAUUSD',
-    'XAG': 'XAGUSD',
-    'Cu': 'HGUSD',
-    'Pt': 'PLUSD',
-    'Pd': 'PAUSD'
+    'XAU': 'GCUSD', // Gold Spot
+    'XAG': 'SIUSD', // Silver Spot
+    'Cu': 'HGUSD',  // Copper Spot
+    'Pt': 'PLUSD',  // Platinum Spot
+    'Pd': 'PAUSD'   // Palladium Spot
 };
 
-export async function fetchMarketData(symbol: string, apiKey: string): Promise<MarketData> {
+export async function fetchMarketData(symbol: string, apiKey: string): Promise<MarketData | null> {
     const fmpSymbol = SYMBOL_MAP[symbol] || symbol;
 
-    // Fetch 4 Hour candles (enough for BB and RSI calculation)
-    const url = `https://financialmodelingprep.com/api/v3/historical-chart/4hour/${fmpSymbol}?apikey=${apiKey}`;
+    try {
+        // Fetch 4 Hour candles (enough for BB and RSI calculation)
+        const url = `https://financialmodelingprep.com/api/v3/historical-chart/4hour/${fmpSymbol}?apikey=${apiKey}`;
 
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch data for ${symbol}: ${response.statusText}`);
-    }
+        const response = await fetch(url);
+        
+        if (response.status === 403) {
+            console.error(`FMP API Forbidden (403) for ${symbol} (${fmpSymbol}). Free tier might not support this symbol via historical-chart.`);
+            return null;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data for ${symbol}: ${response.statusText}`);
+        }
 
     const data: any[] = await response.json();
 
@@ -78,4 +85,8 @@ export async function fetchMarketData(symbol: string, apiKey: string): Promise<M
         bb_status: technicals.bb_status!,
         trend: technicals.trend!
     };
+  } catch (err) {
+    console.error(`Error in fetchMarketData for ${symbol}:`, err);
+    return null;
+  }
 }

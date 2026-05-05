@@ -26,7 +26,10 @@ async function getAllMarketData(apiKey: string) {
 	const results = await Promise.all(metals.map(metal => fetchMarketData(metal, apiKey)));
 
 	metals.forEach((metal, i) => {
-		data[metal] = results[i];
+		const res = results[i];
+		if (res) {
+			data[metal] = res;
+		}
 	});
 
 	return data;
