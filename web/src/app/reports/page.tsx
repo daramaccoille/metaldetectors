@@ -1,8 +1,8 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { db } from "@/drizzle/db"
-import { agentReports } from "@/drizzle/schema"
-import { desc } from "drizzle-orm"
+import { agentReports, subscribers } from "@/drizzle/schema"
+import { desc, eq } from "drizzle-orm"
 import ReportsClient from "./ReportsClient"
 
 export const runtime = 'edge';
@@ -13,6 +13,18 @@ export default async function ReportsPage() {
   if (!session?.user) {
     // Redirect unauthenticated users to login
     redirect("/api/auth/signin");
+  }
+
+  // Enforce access control - verify active subscription
+  if (session.user.email) {
+    const subscriber = await db.query.subscribers.findFirst({
+      where: eq(subscribers.email, session.user.email)
+    });
+    
+    if (!subscriber?.active) {
+      // Redirect to home page or a specific subscription renewal page
+      redirect("/#pricing");
+    }
   }
 
   // Fetch all reports from Neon and order by newest

@@ -1,6 +1,7 @@
 "use client"
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
+import ReportsChart from './ReportsChart';
 
 interface Report {
   id: string;
@@ -145,6 +146,9 @@ export default function ReportsClient({ reports, email }: { reports: Report[], e
             </div>
           </div>
         </div>
+
+        {/* Visual Dashboard */}
+        <ReportsChart reports={reports} selectedMetal={selectedMetal} />
 
         {/* Results */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>

@@ -54,6 +54,20 @@ export async function POST(req: Request) {
       }
       break;
 
+    case 'customer.subscription.deleted': {
+      const subscription = event.data.object;
+      console.log(`Processing subscription deleted for customer ${subscription.customer}`);
+      try {
+        await db.update(subscribers)
+          .set({ active: false })
+          .where(eq(subscribers.stripeCustomerId, subscription.customer as string));
+        console.log(`Deactivated subscriber with customer ID: ${subscription.customer}`);
+      } catch (err) {
+        console.error('Error deactivating subscriber:', err);
+      }
+      break;
+    }
+
     default:
       console.log(`Unhandled event type ${event.type}`);
   }

@@ -1,18 +1,10 @@
 import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { db } from "@/drizzle/db"
-import { agentReports } from "@/drizzle/schema"
+import { agentReports, subscribers } from "@/drizzle/schema"
 import { eq } from "drizzle-orm"
 import Link from "next/link"
-import dynamic from "next/dynamic"
-
-// Dynamically import the markdown viewer with SSR disabled.
-// This prevents 'react-markdown' and its heavy AST parsers from being bundled 
-// into the Cloudflare Edge Worker, keeping the bundle well under 3MB!
-const MarkdownViewer = dynamic(() => import('./MarkdownViewer'), { 
-    ssr: false,
-    loading: () => <div style={{ color: '#9ca3af', padding: '2rem', textAlign: 'center' }}>Decrypting report...</div>
-});
+import ClientMarkdownWrapper from "./ClientMarkdownWrapper"
 
 export const runtime = 'edge';
 
@@ -21,6 +13,17 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
   
   if (!session?.user) {
     redirect("/login");
+  }
+
+  // Enforce access control - verify active subscription
+  if (session.user.email) {
+    const subscriber = await db.query.subscribers.findFirst({
+      where: eq(subscribers.email, session.user.email)
+    });
+    
+    if (!subscriber?.active) {
+      redirect("/#pricing");
+    }
   }
 
   // Fetch the specific report
@@ -67,7 +70,7 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
           </header>
 
           <div className="markdown-body" style={{ color: '#d1d5db', lineHeight: 1.7, fontSize: '1.05rem' }}>
-            <MarkdownViewer content={report.contentMd} />
+            <ClientMarkdownWrapper content={report.contentMd} />
           </div>
         </article>
       </div>
