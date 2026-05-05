@@ -3,8 +3,7 @@
 import { db } from "@/drizzle/db"
 import { users, passwordResetTokens } from "@/drizzle/schema"
 import { eq } from "drizzle-orm"
-import bcrypt from "bcryptjs"
-import crypto from "crypto"
+import { hashPassword } from "@/lib/password"
 
 export async function registerUser(formData: FormData) {
   const email = formData.get("email") as string;
@@ -19,7 +18,7 @@ export async function registerUser(formData: FormData) {
 
   if (existingUser) return { error: "Email already in use" };
 
-  const passwordHash = await bcrypt.hash(password, 10);
+  const passwordHash = await hashPassword(password);
 
   await db.insert(users).values({
     email,
@@ -43,7 +42,9 @@ export async function forgotPassword(formData: FormData) {
     return { success: "If an account exists, a reset link has been sent." };
   }
 
-  const token = crypto.randomBytes(32).toString("hex");
+  const token = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
   const expiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
 
   await db.insert(passwordResetTokens).values({
