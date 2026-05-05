@@ -6,7 +6,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  serverExternalPackages: ['resend', '@neondatabase/serverless'],
 };
 
 export default nextConfig;
