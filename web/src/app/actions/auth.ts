@@ -53,8 +53,42 @@ export async function forgotPassword(formData: FormData) {
     expiresAt
   });
 
-  // Here you would integrate with Resend to send the actual email
-  console.log(`PASSWORD RESET LINK: /reset-password?token=${token}`);
+  // Send the actual email via Resend
+  try {
+    const resetUrl = `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
+    
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+      },
+      body: JSON.stringify({
+        from: 'MetalDetectors <noreply@metaldetectors.online>',
+        to: email,
+        subject: 'Reset your MetalDetectors Password',
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+            <h1 style="color: #eab308;">Password Reset Request</h1>
+            <p>We received a request to reset your password. Click the button below to choose a new one:</p>
+            <div style="margin: 30px 0;">
+              <a href="${resetUrl}" style="background: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                Reset Password
+              </a>
+            </div>
+            <p style="font-size: 14px; color: #666;">This link will expire in 1 hour. If you didn't request this, you can safely ignore this email.</p>
+          </div>
+        `
+      })
+    });
+
+    if (!res.ok) {
+      const error = await res.text();
+      console.error("Resend Error:", error);
+    }
+  } catch (e) {
+    console.error("Failed to send reset email:", e);
+  }
 
   return { success: "If an account exists, a reset link has been sent." };
 }

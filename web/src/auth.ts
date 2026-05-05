@@ -10,6 +10,7 @@ import { verifyPassword } from "./lib/password"
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: DrizzleAdapter(db),
   session: { strategy: "jwt" }, // Required when using Credentials
+  trustHost: true,
   providers: [
     Credentials({
       credentials: {
@@ -35,6 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     }),
     Resend({
+      apiKey: process.env.RESEND_API_KEY,
       from: "noreply@metaldetectors.online",
     }),
   ],

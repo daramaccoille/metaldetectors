@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
 
 export default function PasswordSetupForm({ email }: { email: string }) {
     const [loading, setLoading] = useState(false);
@@ -25,18 +26,25 @@ export default function PasswordSetupForm({ email }: { email: string }) {
         
         if (data?.error) {
             setError(data.error);
+            setLoading(false);
         } else if (data?.success) {
             setSuccess(true);
+            // Automatic Login
+            await signIn('credentials', {
+                email,
+                password,
+                callbackUrl: '/reports',
+                redirect: true
+            });
         }
-        setLoading(false);
     }
 
     if (success) {
         return (
             <div className="bg-green-500/10 border border-green-500/20 rounded-xl p-6 mb-8 text-center">
-                <h3 className="text-xl font-bold text-green-400 mb-2">Account Secured!</h3>
-                <p className="text-gray-300 mb-4">Your password has been set. You can now log in to the Intelligence Terminal.</p>
-                <a href="/login" className="btn-primary inline-block">Go to Login</a>
+                <h3 className="text-xl font-bold text-green-400 mb-2">Account Activated!</h3>
+                <p className="text-gray-300 mb-4">Securing your session and taking you to the terminal...</p>
+                <div className="inline-block h-6 w-6 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }

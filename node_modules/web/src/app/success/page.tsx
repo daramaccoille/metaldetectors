@@ -7,8 +7,8 @@ import PasswordSetupForm from './PasswordSetupForm';
 
 export const runtime = 'edge';
 
-export default async function SuccessPage({ searchParams }: { searchParams: { session_id?: string } }) {
-    const sessionId = searchParams.session_id;
+export default async function SuccessPage({ searchParams }: { searchParams: Promise<{ session_id?: string }> }) {
+    const { session_id: sessionId } = await searchParams;
     let subscriberEmail = null;
     let accountExists = false;
 

@@ -15,18 +15,27 @@ export async function POST(req: Request) {
     }
 
     const existing = await db.query.users.findFirst({ where: eq(users.email, email) });
-    if (existing) {
+    
+    if (existing && existing.passwordHash) {
         return NextResponse.json({ error: "An account with this email already exists." }, { status: 409 });
     }
 
     try {
         const passwordHash = await hashPassword(password);
 
-        await db.insert(users).values({
-            email,
-            passwordHash,
-            name: email.split('@')[0]
-        });
+        if (existing) {
+            // Update existing record (e.g. created by Stripe flow)
+            await db.update(users)
+                .set({ passwordHash })
+                .where(eq(users.id, existing.id));
+        } else {
+            // Create new record
+            await db.insert(users).values({
+                email,
+                passwordHash,
+                name: email.split('@')[0]
+            });
+        }
 
         return NextResponse.json({ success: true });
     } catch (e: any) {

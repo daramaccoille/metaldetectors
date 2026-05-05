@@ -21,8 +21,8 @@ export default async function ReportsPage() {
       where: eq(users.email, session.user.email)
     });
     
-    if (!subscriber?.active) {
-      // Redirect to home page or a specific subscription renewal page
+    if (!subscriber?.active || !subscriber?.emailVerified) {
+      // Redirect to home page or a specific subscription renewal/verification page
       redirect("/#pricing");
     }
   }

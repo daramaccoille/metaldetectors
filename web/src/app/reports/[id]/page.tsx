@@ -8,7 +8,8 @@ import ClientMarkdownWrapper from "./ClientMarkdownWrapper"
 
 export const runtime = 'edge';
 
-export default async function ReportDetailPage({ params }: { params: { id: string } }) {
+export default async function ReportDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const session = await auth();
   
   if (!session?.user) {
@@ -21,14 +22,14 @@ export default async function ReportDetailPage({ params }: { params: { id: strin
       where: eq(users.email, session.user.email)
     });
     
-    if (!subscriber?.active) {
+    if (!subscriber?.active || !subscriber?.emailVerified) {
       redirect("/#pricing");
     }
   }
 
   // Fetch the specific report
   const report = await db.query.agentReports.findFirst({
-    where: eq(agentReports.id, params.id)
+    where: eq(agentReports.id, id)
   });
 
   if (!report) {

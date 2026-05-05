@@ -44,7 +44,8 @@ export async function POST(req: Request) {
         await db.update(users)
           .set({
             active: true,
-            stripeCustomerId: session.customer as string
+            stripeCustomerId: session.customer as string,
+            emailVerified: new Date()
           })
           .where(eq(users.stripeId, session.id));
         console.log(`Activated subscriber with session ID: ${session.id}`);

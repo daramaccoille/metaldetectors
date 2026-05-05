@@ -1,7 +1,11 @@
-import { signIn } from "@/auth"
+"use client"
+
+import { signIn } from "next-auth/react"
 import Link from "next/link"
+import { useRef } from "react"
 
 export default function LoginPage() {
+  const emailRef = useRef<HTMLInputElement>(null);
   return (
     <main className="main-layout">
       <div className="bg-ambience"></div>
@@ -18,15 +22,21 @@ export default function LoginPage() {
           <p className="hero-subtitle" style={{ fontSize: '1rem', margin: 0 }}>Sign in to access your dashboard.</p>
         </div>
         
-        <form action={async (formData) => {
-          "use server"
-          await signIn("credentials", formData, { redirectTo: "/reports" })
+        <form onSubmit={async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          await signIn("credentials", { 
+            email: formData.get("email"), 
+            password: formData.get("password"),
+            redirectTo: "/reports" 
+          });
         }} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#9ca3af', marginBottom: '0.5rem' }}>Email</label>
             <input 
               type="email" 
               name="email" 
+              ref={emailRef}
               placeholder="you@example.com" 
               className="email-input" 
               style={{ width: '100%', padding: '0.75rem 1rem' }}
@@ -52,6 +62,27 @@ export default function LoginPage() {
             Sign In
           </button>
         </form>
+
+        <div style={{ margin: '2rem 0', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
+          <span style={{ color: '#71717a', fontSize: '0.75rem', textTransform: 'uppercase' }}>or</span>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.1)' }}></div>
+        </div>
+
+        <button 
+          type="button" 
+          className="btn-secondary" 
+          style={{ width: '100%' }}
+          onClick={async () => {
+            if (emailRef.current?.value) {
+              await signIn("resend", { email: emailRef.current.value });
+            } else {
+              alert("Please enter your email first");
+            }
+          }}
+        >
+          Sign in with Magic Link
+        </button>
 
         <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: '#71717a' }}>
           Don't have an account? <Link href="/register" style={{ color: '#eab308', textDecoration: 'none', marginLeft: '0.25rem' }}>Sign up</Link>
