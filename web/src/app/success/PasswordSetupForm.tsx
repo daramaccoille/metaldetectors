@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { completeRegistration } from '@/app/actions';
 
 export default function PasswordSetupForm({ email }: { email: string }) {
     const [loading, setLoading] = useState(false);
@@ -14,13 +13,19 @@ export default function PasswordSetupForm({ email }: { email: string }) {
         setError('');
 
         const formData = new FormData(e.currentTarget);
-        formData.append('email', email);
+        const password = formData.get('password') as string;
 
-        const res = await completeRegistration(formData);
+        const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
         
-        if (res?.error) {
-            setError(res.error);
-        } else if (res?.success) {
+        if (data?.error) {
+            setError(data.error);
+        } else if (data?.success) {
             setSuccess(true);
         }
         setLoading(false);

@@ -189,34 +189,3 @@ export async function manageSubscription(formData: FormData) {
     redirect('/account?sent=true');
 }
 
-import bcrypt from 'bcryptjs';
-import { users } from '@/drizzle/schema';
-
-export async function completeRegistration(formData: FormData) {
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    
-    if (!email || !password || password.length < 6) {
-        return { error: "Password must be at least 6 characters long." };
-    }
-    
-    // Check if user already exists
-    const existing = await db.query.users.findFirst({ where: eq(users.email, email) });
-    if (existing) {
-        return { error: "An account with this email already exists." };
-    }
-
-    try {
-        const passwordHash = await bcrypt.hash(password, 10);
-        await db.insert(users).values({
-            email,
-            passwordHash,
-            name: email.split('@')[0]
-        });
-        
-        return { success: true };
-    } catch (e: any) {
-        console.error("Registration error:", e);
-        return { error: "Failed to create account. Please try again." };
-    }
-}

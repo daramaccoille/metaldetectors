@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { db } from '@/drizzle/db';
 import { agentReports, subscribers } from '@/drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
-import { Resend } from 'resend';
 
 export const runtime = 'edge';
 
@@ -86,7 +85,7 @@ export async function GET(req: Request) {
       return new NextResponse('No active subscribers to send to.', { status: 200 });
     }
 
-    // 6. Blast emails using Resend Batch API
+    // 6. Blast emails using Resend REST API (no SDK needed - keeps edge bundle tiny)
     const emailsToSend = activeSubscribers.map(sub => ({
       from: 'Intelligence Terminal <reports@metaldetectors.online>',
       to: [sub.email],
@@ -94,12 +93,19 @@ export async function GET(req: Request) {
       html: emailHtml,
     }));
 
-    // Resend allows batching up to 100 emails at once
-    const { data, error } = await resend.batch.send(emailsToSend);
+    const resendRes = await fetch('https://api.resend.com/emails/batch', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+      },
+      body: JSON.stringify(emailsToSend)
+    });
 
-    if (error) {
-      console.error('Error sending emails:', error);
-      return new NextResponse(`Error sending emails: ${error.message}`, { status: 500 });
+    if (!resendRes.ok) {
+      const errText = await resendRes.text();
+      console.error('Error sending emails:', errText);
+      return new NextResponse(`Error sending emails: ${errText}`, { status: 500 });
     }
 
     return new NextResponse(`Successfully sent ${emailsToSend.length} digests!`, { status: 200 });
