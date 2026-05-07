@@ -1,0 +1,43 @@
+name: Deploy Web to Cloudflare
+
+on:
+  push:
+    branches:
+      - main # Change this if your default branch is different (e.g., master)
+    paths:
+      - 'web/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Build and Deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: web/package.json
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: web
+
+      - name: Build and Deploy
+        run: npm run deploy
+        working-directory: web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Add any build-time environment variables your Next.js app needs here
+          NEXT_PUBLIC_URL: ${{ secrets.NEXT_PUBLIC_URL }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          STRIPE_PRICE_ID_BASIC: ${{ secrets.STRIPE_PRICE_ID_BASIC }}
+          STRIPE_PRICE_ID_PRO: ${{ secrets.STRIPE_PRICE_ID_PRO }}
+
