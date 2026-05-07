@@ -4,6 +4,7 @@ import { agentReports, users } from '@/drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
 import { Resend } from 'resend';
 
+
 export const runtime = 'edge';
 
 export async function GET(req: Request) {
