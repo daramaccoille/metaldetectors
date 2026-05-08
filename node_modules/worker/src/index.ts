@@ -19,7 +19,7 @@ export interface Env {
 }
 
 async function getAllMarketData(apiKey: string) {
-	const metals = ['XAU', 'XAG', 'Cu', 'Pt', 'Pd'];
+	const metals = ['XAG', 'Pt', 'Pd'];
 	const data: Record<string, MarketData> = {};
 
 	// Fetch in parallel
