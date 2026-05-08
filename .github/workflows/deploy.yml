@@ -40,4 +40,4 @@ jobs:
           STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
           STRIPE_PRICE_ID_BASIC: ${{ secrets.STRIPE_PRICE_ID_BASIC }}
           STRIPE_PRICE_ID_PRO: ${{ secrets.STRIPE_PRICE_ID_PRO }}
-
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
