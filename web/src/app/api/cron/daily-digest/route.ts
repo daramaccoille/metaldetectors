@@ -6,6 +6,7 @@ import { Resend } from 'resend';
 
 export const runtime = 'edge';
 
+
 export async function GET(req: Request) {
   // 1. Verify cron secret to prevent unauthorized execution
   const authHeader = req.headers.get('authorization');
