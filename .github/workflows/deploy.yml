@@ -41,3 +41,5 @@ jobs:
           STRIPE_PRICE_ID_BASIC: ${{ secrets.STRIPE_PRICE_ID_BASIC }}
           STRIPE_PRICE_ID_PRO: ${{ secrets.STRIPE_PRICE_ID_PRO }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+          
